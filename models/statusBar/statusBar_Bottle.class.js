@@ -11,7 +11,6 @@ class StatusBar_Bottle extends StatusBar {
       ],
       x: 10,
       y: 50,
-      percentage: 100,
     });
   }
 }
