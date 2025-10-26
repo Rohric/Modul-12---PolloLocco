@@ -17,7 +17,7 @@ class World {
 		this.ctx = canvas.getContext('2d');
 		this.canvas = canvas;
 		this.keyboard = keyboard;
-    
+
 		this.draw();
 		this.setWorld();
 		this.run();
@@ -75,9 +75,8 @@ class World {
 		this.addObjectsToMap(this.level.enemies);
 		this.addObjectsToMap(this.level.clouds);
 		this.addObjectsToMap(this.throwableObjects);
-this.addObjectsToMap(this.level.collectableCoin);
-this.addObjectsToMap(this.level.collectableBottle);
-
+		this.addObjectsToMap(this.level.collectableCoin);
+		this.addObjectsToMap(this.level.collectableBottle);
 
 		this.ctx.translate(-this.camera_x, 0);
 

@@ -54,7 +54,7 @@ class Character extends MovableObject {
 	];
 	world;
 	constructor() {
-		super().loadImage("img/2_character_pepe/1_idle/idle/I-1.png");
+		super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
 		this.loadImages(this.images_idle);
 		this.loadImages(this.images_walking);
 		this.loadImages(this.images_jumping);
@@ -85,7 +85,7 @@ class Character extends MovableObject {
 		}, 1000 / 60);
 
 		setInterval(() => {
-      this.playAnimation(this.images_idle);
+			this.playAnimation(this.images_idle);
 			if (this.isDead()) {
 				this.playAnimation(this.images_dead);
 			} else if (this.isHurt()) {
