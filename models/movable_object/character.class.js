@@ -1,6 +1,6 @@
 class Character extends MovableObject {
 	height = 280;
-	y = 80;
+	y = 180;
 	speed = 10;
 
 	images_idle = [
@@ -97,10 +97,19 @@ class Character extends MovableObject {
 					this.playAnimation(this.images_walking);
 				}
 			}
-		}, 50);
+		}, 60);
 	}
 
 	jump() {
 		this.speedY = 30;
+	}
+
+	smash(enemy) {
+		if (this.y + this.height - enemy.y < 20 && this.speedY < 0) {
+			enemy.energy = 0;
+			this.speedY = 30;
+			return true;
+		}
+		return false;
 	}
 }

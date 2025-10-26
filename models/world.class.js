@@ -28,6 +28,9 @@ class World {
 	run() {
 		setInterval(() => {
 			this.checkCollisions();
+		}, 1000 / 60);
+
+		setInterval(() => {
 			this.checkCollectables();
 			this.checkThrowObjects();
 		}, 200);
@@ -41,13 +44,21 @@ class World {
 	}
 
 	checkCollisions() {
-		this.level.enemies.forEach((enemy) => {
-			if (this.character.isColliding(enemy)) {
-				this.character.hit();
-				this.statusBar.setPercentage(this.character.energy);
-
-				console.log('collision with Character, enery', this.character.energy);
+		this.level.enemies.forEach((enemy, index) => {
+			if (!this.character.isColliding(enemy)) {
+				return;
 			}
+
+			if (this.character.smash(enemy)) {
+				this.level.enemies.splice(index, 1);
+				return;
+			}
+
+			// hier bleibt dein normaler Damage-Block
+			this.character.hit();
+			this.statusBar.setPercentage(this.character.energy);
+
+			console.log('collision with Character, enery', this.character.energy);
 		});
 	}
 
