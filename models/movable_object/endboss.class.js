@@ -45,6 +45,9 @@ class Endboss extends MovableObject {
 	mode = 'alert';
 	frameIndex = 0;
 	attackActive = false;
+	height = 400;
+	width = 200;
+	y=80
 
 	constructor() {
 		super();
