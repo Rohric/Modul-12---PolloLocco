@@ -54,7 +54,10 @@ class World {
 				return;
 			}
 
-			// hier bleibt dein normaler Damage-Block
+			if (this.character.isHurt()) {
+				return;
+			}
+
 			this.character.hit();
 			this.statusBar.setPercentage(this.character.energy);
 
