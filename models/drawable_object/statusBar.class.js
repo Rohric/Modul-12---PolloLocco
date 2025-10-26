@@ -1,4 +1,4 @@
-class StatusBar extends drawableObject {
+class StatusBar extends DrawableObject {
 	images = [];
 	percentage = 100;
 
