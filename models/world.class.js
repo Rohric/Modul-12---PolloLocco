@@ -6,7 +6,7 @@ class World {
   ctx;
   keyboard;
   camera_x = -0;
-  statusBar = new StatusBar();
+  statusBar = new StatusBar_Health();
   statusBar_Bottle = new StatusBar_Bottle();
   statusBar_Coin = new StatusBar_Coin();
   throwableObjects = [];
