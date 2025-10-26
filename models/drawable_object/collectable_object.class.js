@@ -11,7 +11,7 @@ class CollectableObject extends DrawableObject {
 	}
 
 	setRandomPosition() {
-		this.x = Math.random() * 500 + 120;
+		this.x = Math.random() * (719*3) + 120;
 	}
 	
 	isCollect(character) {
