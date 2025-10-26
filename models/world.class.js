@@ -13,6 +13,7 @@ class World {
 
 	bossTriggered = false;
 	endboss = null;
+	bossAttackInterval = null;
 
 	constructor(canvas) {
 		this.ctx = canvas.getContext('2d');
@@ -31,6 +32,7 @@ class World {
 	run() {
 		setInterval(() => {
 			this.checkCollisions();
+			this.checkThrowableHits();
 		}, 1000 / 60);
 
 		setInterval(() => {
@@ -48,11 +50,15 @@ class World {
 
 	checkCollisions() {
 		this.level.enemies.forEach((enemy, index) => {
+			if (enemy instanceof Endboss && enemy.mode === 'dead') {
+				return;
+			}
+
 			if (!this.character.isColliding(enemy)) {
 				return;
 			}
 
-			if (this.character.smash(enemy)) {
+			if (!(enemy instanceof Endboss) && this.character.smash(enemy)) {
 				this.level.enemies.splice(index, 1);
 				return;
 			}
@@ -98,12 +104,58 @@ class World {
 			this.bossTriggered = true;
 			if (this.endboss) {
 				this.endboss.startEntrance(stopX);
+				this.startBossAttackLoop();
 			}
 		}
 
 		if (this.endboss) {
 			this.endboss.update();
 		}
+	}
+
+	startBossAttackLoop() {
+		if (this.bossAttackInterval || !this.endboss) {
+			return;
+		}
+		this.bossAttackInterval = setInterval(() => {
+			if (!this.endboss || this.endboss.entering || this.endboss.mode === 'dead') {
+				return;
+			}
+			if (this.endboss.startAttack()) {
+				this.spawnAttackChickens();
+			}
+		}, 5000);
+	}
+
+	spawnAttackChickens() {
+		for (let i = 0; i < 5; i++) {
+			const chicken = new Chicken();
+			chicken.x = Math.random() * (1200) + 719*3+500;
+
+			this.level.enemies.push(chicken);
+		}
+	}
+
+	checkThrowableHits() {
+		if (!this.endboss || this.endboss.mode === 'dead') {
+			return;
+		}
+
+		this.throwableObjects = this.throwableObjects.filter((bottle) => {
+			if (this.endboss.isColliding(bottle)) {
+				this.endboss.hit();
+				this.endboss.showHurt();
+				if (this.endboss.energy <= 0) {
+					this.endboss.die();
+				}
+				return false;
+			}
+
+			if (bottle.x > this.character.x + 2000 || bottle.y > this.canvas.height + 200) {
+				return false;
+			}
+			return true;
+		});
 	}
 
 	draw() {
@@ -152,7 +204,7 @@ class World {
 			this.flipImage(MovableObject);
 		}
 		MovableObject.draw(this.ctx);
-		// Rotes quadrat für die kollisionsrechnung
+		// Rotes quadrat fOr die kollisionsrechnung
 		MovableObject.drawFrame(this.ctx);
 
 		if (MovableObject.otherDirection) {

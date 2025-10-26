@@ -41,7 +41,10 @@ class Endboss extends MovableObject {
 	];
 
 	entering = false;
-	stopX = 0;
+	targetX = 0;
+	mode = 'alert';
+	frameIndex = 0;
+	attackActive = false;
 
 	constructor() {
 		super();
@@ -50,41 +53,96 @@ class Endboss extends MovableObject {
 		this.loadImages(this.images_attack);
 		this.loadImages(this.images_hurt);
 		this.loadImages(this.images_dead);
+		this.loadImage(this.images_alert[0]);
 		this.x = 719 * 3 + 600;
 		this.speed = 3.5;
 		this.animate();
 	}
 
-	animate() {
-		setInterval(() => {
-			if (this.entering) {
-				this.playAnimation(this.images_walking);
-			} else {
-				this.playAnimation(this.images_alert);
-			}
-		}, 200);
-
-		setInterval(() => {
-			this.playAnimation(this.images_idle);
-			if (this.isDead()) {
-				this.playAnimation(this.images_dead);
-			} else if (this.isHurt()) {
-				this.playAnimation(this.images_hurt);
-			} 
-		}, 60);
+	getCurrentImages() {
+		if (this.mode === 'walk') {
+			return this.images_walking;
+		}
+		if (this.mode === 'attack') {
+			return this.images_attack;
+		}
+		if (this.mode === 'hurt') {
+			return this.images_hurt;
+		}
+		if (this.mode === 'dead') {
+			return this.images_dead;
+		}
+		return this.images_alert;
 	}
 
-	startEntrance(stopPosition) {
-		this.stopX = stopPosition;
+	animate() {
+		setInterval(() => {
+			const images = this.getCurrentImages();
+			if (!images.length) {
+				return;
+			}
+			if (this.frameIndex >= images.length) {
+				this.frameIndex = 0;
+			}
+			const path = images[this.frameIndex];
+			this.img = this.imageCache[path];
+			this.frameIndex++;
+
+			if (this.mode === 'attack' && this.frameIndex >= images.length) {
+				this.mode = 'alert';
+				this.frameIndex = 0;
+				this.attackActive = false;
+			}
+
+			if (this.mode === 'hurt' && this.frameIndex >= images.length) {
+				this.mode = 'alert';
+				this.frameIndex = 0;
+			}
+
+			if (this.mode === 'dead' && this.frameIndex >= images.length) {
+				this.frameIndex = images.length - 1;
+			}
+		}, 200);
+	}
+
+	startEntrance(targetPosition) {
+		this.targetX = targetPosition;
 		this.entering = true;
+		this.mode = 'walk';
+		this.frameIndex = 0;
 	}
 
 	update() {
-		if (this.entering && this.x > this.stopX) {
+		if (this.entering && this.x > this.targetX) {
 			this.moveLeft();
-			if (this.x <= this.stopX) {
+			if (this.x <= this.targetX) {
 				this.entering = false;
+				this.mode = 'alert';
+				this.frameIndex = 0;
 			}
 		}
+	}
+
+	startAttack() {
+		if (this.entering || this.mode === 'dead' || this.attackActive) {
+			return false;
+		}
+		this.mode = 'attack';
+		this.frameIndex = 0;
+		this.attackActive = true;
+		return true;
+	}
+
+	showHurt() {
+		if (this.mode === 'dead') {
+			return;
+		}
+		this.mode = 'hurt';
+		this.frameIndex = 0;
+	}
+
+	die() {
+		this.mode = 'dead';
+		this.frameIndex = 0;
 	}
 }
