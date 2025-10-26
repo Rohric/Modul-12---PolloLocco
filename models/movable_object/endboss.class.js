@@ -44,15 +44,39 @@ class Endboss extends MovableObject {
 		'img/4_enemie_boss_chicken/5_dead/G26.png',
 	];
 
+	entering = false;
+	stopX = 0;
+
 	constructor() {
-		super().loadImage(this.images_walking[0]);
+		super().loadImage(this.images_alert[0]);
+		this.loadImages(this.images_alert);
 		this.loadImages(this.images_walking);
 		this.x = 719 * 3 + 500;
+		this.speed = 2.5;
 		this.animate();
 	}
+
 	animate() {
 		setInterval(() => {
-			this.playAnimation(this.images_walking);
+			if (this.entering) {
+				this.playAnimation(this.images_walking);
+			} else {
+				this.playAnimation(this.images_alert);
+			}
 		}, 200);
+	}
+
+	startEntrance(stopPosition) {
+		this.stopX = stopPosition;
+		this.entering = true;
+	}
+
+	update() {
+		if (this.entering && this.x > this.stopX) {
+			this.moveLeft();
+			if (this.x <= this.stopX) {
+				this.entering = false;
+			}
+		}
 	}
 }

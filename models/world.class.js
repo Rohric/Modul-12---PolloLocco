@@ -11,11 +11,14 @@ class World {
 	statusBar_Coin = new StatusBar_Coin();
 	throwableObjects = [];
 
+	bossTriggered = false;
+	endboss = null;
+
 	constructor(canvas) {
 		this.ctx = canvas.getContext('2d');
 		this.canvas = canvas;
 		this.keyboard = keyboard;
-
+		this.endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
 		this.draw();
 		this.setWorld();
 		this.run();
@@ -87,7 +90,24 @@ class World {
 		});
 	}
 
+	checkBossEntrance() {
+		let triggerX = 1500;
+		let stopX = 719 * 3 + 200;
+
+		if (!this.bossTriggered && this.character.x > triggerX) {
+			this.bossTriggered = true;
+			if (this.endboss) {
+				this.endboss.startEntrance(stopX);
+			}
+		}
+
+		if (this.endboss) {
+			this.endboss.update();
+		}
+	}
+
 	draw() {
+		this.checkBossEntrance();
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 		this.ctx.translate(this.camera_x, 0);
