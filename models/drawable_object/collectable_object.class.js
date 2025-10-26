@@ -1,15 +1,15 @@
 class CollectableObject extends DrawableObject {
-	x = MathRandom() * 500 + 120;
+	width = 80;
+	height = 80;
+	y = 380;
 
-    loadImages(){
+	constructor(imagePath) {
+		super();
+		this.setRandomPosition();
+		this.loadImage(imagePath);
+	}
 
-        // Funktion zum verteilen auf dem canvas
-        // function spawnItem(){}
-        // load images on x 
-
-        // Funktion zum einsammeln
-        //if character hit CollactableObject
-        //give percantegae from statusBar +20%
-    };
-
+	setRandomPosition() {
+		this.x = Math.random() * 500 + 120;
+	}
 }
