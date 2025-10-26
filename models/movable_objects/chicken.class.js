@@ -1,8 +1,8 @@
 class Chicken extends MovableObject {
   y = 370;
+  x = 200 + Math.random()*500;
   height = 60;
   width = 80;
-  x = 200 + Math.random()*500;
 
 
   images_walking = [
