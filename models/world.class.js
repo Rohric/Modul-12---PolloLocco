@@ -91,7 +91,7 @@ class World {
 	}
 
 	checkBossEntrance() {
-		let triggerX = 1500;
+		let triggerX = 2100;
 		let stopX = 719 * 3 + 200;
 
 		if (!this.bossTriggered && this.character.x > triggerX) {
