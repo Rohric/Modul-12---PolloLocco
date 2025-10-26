@@ -54,17 +54,21 @@ class World {
 	checkCollectables() {
 		this.level.collectableCoin.forEach((coin) => {
 			if (coin.isCollect(this.character)) {
-				let CoinBar_Percent = this.statusBar_Coin.percentage + 10;
-				if (CoinBar_Percent > 100) {
-					CoinBar_Percent = 100;
+				let coinBar_Percent = this.statusBar_Coin.percentage + 10;
+				if (coinBar_Percent > 100) {
+					coinBar_Percent = 100;
 				}
-				this.statusBar_Coin.setPercentage(CoinBar_Percent);
+				this.statusBar_Coin.setPercentage(coinBar_Percent);
 			}
 		});
 
 		this.level.collectableBottle.forEach((bottle) => {
 			if (bottle.isCollect(this.character)) {
-				// Hier kannst du z.B. den Flaschen-Status aktualisieren
+				let bottleBar_Percent = this.statusBar_Bottle.percentage + 10;
+				if (bottleBar_Percent > 100) {
+					bottleBar_Percent = 100;
+				}
+				this.statusBar_Bottle.setPercentage(bottleBar_Percent);
 			}
 		});
 	}
