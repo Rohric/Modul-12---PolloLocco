@@ -65,7 +65,6 @@ class MovableObject extends DrawableObject {
     this.x += this.speed;
   }
   moveLeft() {
-    console.log("Moving left");
     this.x -= this.speed;
   }
 }

@@ -10,8 +10,6 @@ class World {
 	statusBar_Bottle = new StatusBar_Bottle();
 	statusBar_Coin = new StatusBar_Coin();
 	throwableObjects = [];
-	collectable_Coin = [];
-	collectable_Bottle = [];
 
 	constructor(canvas) {
 		this.ctx = canvas.getContext('2d');
@@ -30,6 +28,7 @@ class World {
 	run() {
 		setInterval(() => {
 			this.checkCollisions();
+			this.checkCollectables();
 			this.checkThrowObjects();
 		}, 200);
 	}
@@ -48,6 +47,24 @@ class World {
 				this.statusBar.setPercentage(this.character.energy);
 
 				console.log('collision with Character, enery', this.character.energy);
+			}
+		});
+	}
+
+	checkCollectables() {
+		this.level.collectableCoin.forEach((coin) => {
+			if (coin.isCollect(this.character)) {
+				let CoinBar_Percent = this.statusBar_Coin.percentage + 10;
+				if (CoinBar_Percent > 100) {
+					CoinBar_Percent = 100;
+				}
+				this.statusBar_Coin.setPercentage(CoinBar_Percent);
+			}
+		});
+
+		this.level.collectableBottle.forEach((bottle) => {
+			if (bottle.isCollect(this.character)) {
+				// Hier kannst du z.B. den Flaschen-Status aktualisieren
 			}
 		});
 	}
@@ -75,8 +92,8 @@ class World {
 		this.addObjectsToMap(this.level.enemies);
 		this.addObjectsToMap(this.level.clouds);
 		this.addObjectsToMap(this.throwableObjects);
-		this.addObjectsToMap(this.level.collectableCoin);
-		this.addObjectsToMap(this.level.collectableBottle);
+		this.addObjectsToMap(this.level.collectableCoin.filter((coin) => !coin.collected));
+		this.addObjectsToMap(this.level.collectableBottle.filter((bottle) => !bottle.collected));
 
 		this.ctx.translate(-this.camera_x, 0);
 
