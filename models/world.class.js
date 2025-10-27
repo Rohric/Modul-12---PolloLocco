@@ -9,6 +9,7 @@ class World {
 	statusBar = new StatusBar_Health();
 	statusBar_Bottle = new StatusBar_Bottle();
 	statusBar_Coin = new StatusBar_Coin();
+	statusBar_Endboss = new StatusBar_Endboss();
 	throwableObjects = [];
 
 	bossTriggered = false;
@@ -54,42 +55,35 @@ class World {
 		}
 	}
 
-checkCollisions() {
-  this.level.enemies.forEach((enemy) => {
-    if (!this.character.isColliding(enemy)) {
-      return;
-    }
+	checkCollisions() {
+		this.level.enemies.forEach((enemy) => {
+			if (!this.character.isColliding(enemy)) {
+				return;
+			}
 
-    if (enemy.dead) {
-      return;
-    }
+			if (enemy.dead) {
+				return;
+			}
 
-    if (this.character.smash(enemy)) {
-      
-        enemy.die();
-      
-      setTimeout(() => {
-        const idx = this.level.enemies.indexOf(enemy);
-       
-          this.level.enemies.splice(idx, 1);
-        
-      }, 700);
-      return;
-    }
+			if (this.character.smash(enemy)) {
+				enemy.die();
 
-    if (this.character.isHurt()) {
-      return;
-    }
+				setTimeout(() => {
+					const idx = this.level.enemies.indexOf(enemy);
 
-    this.character.hit();
-    this.statusBar.setPercentage(this.character.energy);
-  });
-}
+					this.level.enemies.splice(idx, 1);
+				}, 700);
+				return;
+			}
 
+			if (this.character.isHurt()) {
+				return;
+			}
 
-
-
-
+			this.character.hit();
+			this.statusBar.setPercentage(this.character.energy);
+		});
+	}
 
 	checkCollectables() {
 		this.level.collectableCoin.forEach((coin) => {
@@ -191,6 +185,10 @@ checkCollisions() {
 
 		this.ctx.translate(-this.camera_x, 0);
 		this.addToMap(this.statusBar_Coin);
+		this.ctx.translate(this.camera_x, 0);
+
+		this.ctx.translate(-this.camera_x, 0);
+		this.addToMap(this.statusBar_Endboss);
 		this.ctx.translate(this.camera_x, 0);
 
 		this.addToMap(this.character);
