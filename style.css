@@ -1,36 +1,43 @@
 body {
-margin: 0;
+	margin: 0;
 }
 
-
 .background {
-    margin: 0;
+	margin: 0;
 	background-image: url('img/9_intro_outro_screens/overlay.jpg');
 	background-position: center;
 	background-size: cover;
-
+	gap: 20px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	background-color: rgb(10, 10, 10);
 	color: aliceblue;
-    height: 100vh;
-    width: auto;
+	height: 100vh;
+	width: auto;
 }
 canvas {
-	background-color: black;
+	background-color:none;
 }
 
 .d_none {
 	display: none;
 }
 
-.overlay_game_text {
-	background-color: yellow;
-	color: aqua;
-	width: '720';
-	height: '480';
+.overlay_game_screen {
+	/* background-color: rgb(255, 174, 0); */
+	background-image: url('img/9_intro_outro_screens/start/startscreen_1.png');
+	background-position: center;
+	background-size: contain;
+    background-repeat: no-repeat;
+	color: rgb(0, 0, 0);
+	width: 720px;
+	height: 480px;
 }
-.overlay_game_screen{
 
+.overlay_game_text {
+	background-color: none;
+	color: black;
+	width: 720px;
+	height: 200px;
 }

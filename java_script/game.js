@@ -43,7 +43,8 @@ window.addEventListener('keydown', (event) => {
 	if (event.keyCode == 80) {
 		keyboard.P = true;
 		init();
-		document.getElementById('gameScreen').classList.remove('d_none');
+		document.getElementById('canvas').classList.remove('d_none');
+		document.getElementById('overlayGameScreen').classList.add('d_none');
 	}
 });
 
