@@ -9,6 +9,15 @@ function init() {
 	console.log('My Charakter is', world.character);
 }
 
+// function startGame() {
+// 	if ((world.Keyboard.P = true)) {
+// 		canvas = document.getElementById('game');
+// 		world = new World(canvas, keyboard);
+
+// 		console.log('My Charakter is', world.character);
+// 	}
+// }
+
 window.addEventListener('keydown', (event) => {
 	if (event.keyCode == 32) {
 		keyboard.SPACE = true;
@@ -62,9 +71,9 @@ window.addEventListener('keyup', (event) => {
 
 	if (event.keyCode == 68) {
 		keyboard.D = false;
-
-		if (event.keyCode == 80) {
-			keyboard.P = false;
-		}
+	}
+  
+  if (event.keyCode == 80) {
+		keyboard.P = false;
 	}
 });
