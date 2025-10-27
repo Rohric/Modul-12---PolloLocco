@@ -106,10 +106,9 @@ class Character extends MovableObject {
 
 	smash(enemy) {
 		if (this.y + this.height - enemy.y < 20 && this.speedY < 0) {
-			enemy.energy = 0;
+			enemy.energy = 0 ;
 			this.speedY = 30;
 			return true;
 		}
-		return false;
 	}
 }

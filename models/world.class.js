@@ -54,35 +54,42 @@ class World {
 		}
 	}
 
-	checkCollisions() {
-		this.level.enemies.forEach((enemy, index) => {
-			if (!this.character.isColliding(enemy)) {
-				return;
-			}
+checkCollisions() {
+  this.level.enemies.forEach((enemy) => {
+    if (!this.character.isColliding(enemy)) {
+      return;
+    }
 
-			if (this.character.smash(enemy)) {
-				if (enemy instanceof Chicken) {
-					enemy.die();
-					setTimeout(() => {
-						const idx = this.level.enemies.indexOf(enemy);
-						if (idx !== -1) {
-							this.level.enemies.splice(idx, 1);
-						}
-					}, 700); // tot 0,7–1 Sekunde stehen lassen
-				}
-				return;
-			}
+    if (enemy.dead) {
+      return;
+    }
 
-			if (this.character.isHurt()) {
-				return;
-			}
+    if (this.character.smash(enemy)) {
+      
+        enemy.die();
+      
+      setTimeout(() => {
+        const idx = this.level.enemies.indexOf(enemy);
+       
+          this.level.enemies.splice(idx, 1);
+        
+      }, 700);
+      return;
+    }
 
-			this.character.hit();
-			this.statusBar.setPercentage(this.character.energy);
+    if (this.character.isHurt()) {
+      return;
+    }
 
-			console.log('collision with Character, enery', this.character.energy);
-		});
-	}
+    this.character.hit();
+    this.statusBar.setPercentage(this.character.energy);
+  });
+}
+
+
+
+
+
 
 	checkCollectables() {
 		this.level.collectableCoin.forEach((coin) => {
