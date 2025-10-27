@@ -9,14 +9,14 @@ function init() {
 	console.log('My Charakter is', world.character);
 }
 
-// function startGame() {
-// 	if ((world.Keyboard.P = true)) {
-// 		canvas = document.getElementById('game');
-// 		world = new World(canvas, keyboard);
+function startGame() {
+	if (world.Keyboard.P ) {
+		canvas = document.getElementById('game');
+		world = new World(canvas, keyboard);
 
-// 		console.log('My Charakter is', world.character);
-// 	}
-// }
+		console.log('My Charakter is', world.character);
+	}
+}
 
 window.addEventListener('keydown', (event) => {
 	if (event.keyCode == 32) {
