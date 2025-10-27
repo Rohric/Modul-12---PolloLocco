@@ -136,16 +136,19 @@ class Endboss extends MovableObject {
 		return true;
 	}
 
-	showHurt() {
-		if (this.mode === 'dead') {
-			return;
-		}
-		this.mode = 'hurt';
-		this.frameIndex = 0;
-	}
+showHurt() {
+    if (this.mode === 'dead') {
+        return;
+    }
+    this.attackActive = false;   // <— nach Flaschentreffer wieder freigeben
+    this.mode = 'hurt';
+    this.frameIndex = 0;
+}
 
-	die() {
-		this.mode = 'dead';
-		this.frameIndex = 0;
-	}
+die() {
+    this.attackActive = false;   // <— falls du ihn später killst
+    this.mode = 'dead';
+    this.frameIndex = 0;
+}
+
 }

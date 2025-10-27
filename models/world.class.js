@@ -50,16 +50,20 @@ class World {
 
 	checkCollisions() {
 		this.level.enemies.forEach((enemy, index) => {
-			if (enemy instanceof Endboss && enemy.mode === 'dead') {
-				return;
-			}
-
 			if (!this.character.isColliding(enemy)) {
 				return;
 			}
 
-			if (!(enemy instanceof Endboss) && this.character.smash(enemy)) {
-				this.level.enemies.splice(index, 1);
+			if (this.character.smash(enemy)) {
+				if (enemy instanceof Chicken) {
+					enemy.die();
+					setTimeout(() => {
+						const idx = this.level.enemies.indexOf(enemy);
+						if (idx !== -1) {
+							this.level.enemies.splice(idx, 1);
+						}
+					}, 700); // tot 0,7–1 Sekunde stehen lassen
+				}
 				return;
 			}
 
@@ -130,8 +134,7 @@ class World {
 	spawnAttackChickens() {
 		for (let i = 0; i < 5; i++) {
 			const chicken = new Chicken();
-			chicken.x = Math.random() * (1200) + 719*3+500;
-
+		chicken.x = Math.random() * (1200) + 719*3+500;
 			this.level.enemies.push(chicken);
 		}
 	}
