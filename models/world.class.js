@@ -115,6 +115,7 @@ class World {
 			this.bossTriggered = true;
 			if (this.endboss) {
 				this.endboss.startEntrance(stopX);
+    this.slideEndbossBar();
 				this.startBossAttackLoop();
 			}
 		}
@@ -138,6 +139,23 @@ class World {
 		}, 5000);
 	}
 
+	slideEndbossBar() {
+  const targetX = 10;
+  let speed = 6;
+
+  const move = () => {
+    if (this.statusBar_Endboss.x < targetX) {
+      this.statusBar_Endboss.x += speed;
+      if (this.statusBar_Endboss.x > targetX) {
+        this.statusBar_Endboss.x = targetX;
+      }
+      requestAnimationFrame(move);
+    }
+  };
+
+  requestAnimationFrame(move);
+}
+
 	spawnAttackChickens() {
 		for (let i = 0; i < 5; i++) {
 			const chicken = new Chicken();
@@ -150,6 +168,7 @@ class World {
 		this.throwableObjects = this.throwableObjects.filter((bottle) => {
 			if (this.endboss.isColliding(bottle)) {
 				this.endboss.hit();
+				this.statusBar_Endboss.setPercentage(this.endboss.energy);
 				return false;
 			}
 			if (bottle.x > this.character.x + 2000 || bottle.y > this.canvas.height + 200) {

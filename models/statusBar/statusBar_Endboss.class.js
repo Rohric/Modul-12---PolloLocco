@@ -1,17 +1,19 @@
 class StatusBar_Endboss extends StatusBar {
-  constructor() {
-    super({
-      images: [
-        "img/7_statusbars/2_statusbar_endboss/orange/orange0.png",
-        "img/7_statusbars/2_statusbar_endboss/orange/orange20.png",
-        "img/7_statusbars/2_statusbar_endboss/orange/orange40.png",
-        "img/7_statusbars/2_statusbar_endboss/orange/orange60.png",
-        "img/7_statusbars/2_statusbar_endboss/orange/orange80.png",
-        "img/7_statusbars/2_statusbar_endboss/orange/orange100.png",
+	constructor() {
+		super({
+			images: [
+				'img/7_statusbars/2_statusbar_endboss/orange/orange0.png',
+				'img/7_statusbars/2_statusbar_endboss/orange/orange20.png',
+				'img/7_statusbars/2_statusbar_endboss/orange/orange40.png',
+				'img/7_statusbars/2_statusbar_endboss/orange/orange60.png',
+				'img/7_statusbars/2_statusbar_endboss/orange/orange80.png',
+				'img/7_statusbars/2_statusbar_endboss/orange/orange100.png',
+			],
+			x: -250,
+			y: 400,
+			percentage: 100,
+		});
+	}
+  
 
-      ],
-      x: 10,
-      y: 400,
-    });
-  }
 }
