@@ -4,14 +4,12 @@
 		<meta charset="UTF-8" />
 		<meta
 			name="viewport"
-			content="width=device-width, initial-scale=1.0"
-		/>
+			content="width=device-width, initial-scale=1.0" />
 		<title>El Polloo Locco</title>
 
 		<link
 			rel="stylesheet"
-			href="style.css"
-		/>
+			href="style.css" />
 
 		<script src="models/drawable_object/drawable_object.class.js"></script>
 		<script src="models/drawable_object/movableObject.class.js"></script>
@@ -43,21 +41,23 @@
 
 	<body>
 		<section class="background">
-			
 			<h1>Ell Pollo Locco</h1>
 
 			<div
 				id="gameScreen"
-				class="d_none"
-			>
+				class="d_none">
+				<div
+					id="overlayGameScreen"
+					class="overlay_game_screen"></div>
+
 				<canvas
 					id="canvas"
 					width="720"
-					height="480"
-				>
+					height="480">
 				</canvas>
 			</div>
-			<div id="gameText">
+
+			<div id="overlayGameText" class="overlay_game_text">
 				<p>hier steht was was macht</p>
 			</div>
 		</section>

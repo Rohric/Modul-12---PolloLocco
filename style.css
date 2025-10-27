@@ -25,9 +25,12 @@ canvas {
 	display: none;
 }
 
-#gameText {
+.overlay_game_text {
 	background-color: yellow;
 	color: aqua;
 	width: '720';
 	height: '480';
+}
+.overlay_game_screen{
+
 }
