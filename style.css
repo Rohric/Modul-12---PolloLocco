@@ -46,6 +46,17 @@ canvas {
 	height: 480px;
 }
 
+.overlay_game_screen_lost {
+	/* background-color: rgb(255, 174, 0); */
+	background-image: url('img/You won, you lost/You lost.png');
+	background-position: center;
+	background-size: contain;
+    background-repeat: no-repeat;
+	color: rgb(0, 0, 0);
+	width: 720px;
+	height: 480px;
+}
+
 .overlay_game_text {
 	background-color: none;
 	color: black;

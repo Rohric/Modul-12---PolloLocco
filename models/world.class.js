@@ -30,11 +30,6 @@ class World {
 		this.character.world = this;
 	}
 
-	gameWon() {
-		if (this.endboss.energy <= 0) {
-		}
-	}
-
 	run() {
 		setInterval(() => {
 			this.checkCollisions();
@@ -83,6 +78,11 @@ class World {
 
 			if (this.character.isHurt()) {
 				return;
+			}
+
+			if (this.character.energy == 0) {
+				document.getElementById('canvas').classList.add('d_none');
+				document.getElementById('overlayGameScreenLOST').classList.remove('d_none');
 			}
 
 			this.character.hit();
