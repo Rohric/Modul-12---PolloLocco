@@ -42,9 +42,15 @@ class World {
 	}
 
 	checkThrowObjects() {
-		if (this.keyboard.D) {
+		if (this.keyboard.D && this.statusBar_Bottle.percentage > 0) {
 			let bottle = new ThrowablaObject(this.character.x + 100, this.character.y + 100);
 			this.throwableObjects.push(bottle);
+
+			let percent = this.statusBar_Bottle.percentage - 10;
+			if (percent < 0) {
+				percent = 0;
+			}
+			this.statusBar_Bottle.setPercentage(percent);
 		}
 	}
 
@@ -91,11 +97,11 @@ class World {
 
 		this.level.collectableBottle.forEach((bottle) => {
 			if (bottle.isCollect(this.character)) {
-				let bottleBar_Percent = this.statusBar_Bottle.percentage + 10;
-				if (bottleBar_Percent > 100) {
-					bottleBar_Percent = 100;
+				let percent = this.statusBar_Bottle.percentage + 10;
+				if (percent > 100) {
+					percent = 100;
 				}
-				this.statusBar_Bottle.setPercentage(bottleBar_Percent);
+				this.statusBar_Bottle.setPercentage(percent);
 			}
 		});
 	}
@@ -140,7 +146,6 @@ class World {
 	}
 
 	checkThrowableHits() {
-
 		this.throwableObjects = this.throwableObjects.filter((bottle) => {
 			if (this.endboss.isColliding(bottle)) {
 				this.endboss.hit();
