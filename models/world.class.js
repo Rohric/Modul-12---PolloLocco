@@ -30,6 +30,11 @@ class World {
 		this.character.world = this;
 	}
 
+	gameWon() {
+		if (this.endboss.energy <= 0) {
+		}
+	}
+
 	run() {
 		setInterval(() => {
 			this.checkCollisions();
@@ -115,7 +120,7 @@ class World {
 			this.bossTriggered = true;
 			if (this.endboss) {
 				this.endboss.startEntrance(stopX);
-    this.slideEndbossBar();
+				this.slideEndbossBar();
 				this.startBossAttackLoop();
 			}
 		}
@@ -140,21 +145,21 @@ class World {
 	}
 
 	slideEndbossBar() {
-  const targetX = 10;
-  let speed = 6;
+		const targetX = 10;
+		let speed = 6;
 
-  const move = () => {
-    if (this.statusBar_Endboss.x < targetX) {
-      this.statusBar_Endboss.x += speed;
-      if (this.statusBar_Endboss.x > targetX) {
-        this.statusBar_Endboss.x = targetX;
-      }
-      requestAnimationFrame(move);
-    }
-  };
+		const move = () => {
+			if (this.statusBar_Endboss.x < targetX) {
+				this.statusBar_Endboss.x += speed;
+				if (this.statusBar_Endboss.x > targetX) {
+					this.statusBar_Endboss.x = targetX;
+				}
+				requestAnimationFrame(move);
+			}
+		};
 
-  requestAnimationFrame(move);
-}
+		requestAnimationFrame(move);
+	}
 
 	spawnAttackChickens() {
 		for (let i = 0; i < 5; i++) {
@@ -183,6 +188,8 @@ class World {
 				this.level.enemies.splice(idx, 1);
 			}
 			this.endboss = null;
+			document.getElementById('canvas').classList.add('d_none');
+			document.getElementById('overlayGameScreen').classList.remove('d_none');
 		}
 	}
 
