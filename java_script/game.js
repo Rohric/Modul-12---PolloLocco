@@ -4,6 +4,7 @@ let keyboard = new Keyboard();
 
 function init() {
 	canvas = canvas || document.getElementById('canvas');
+	level1 = createLevel()
 	world = new World(canvas, keyboard);
 	console.log('Start El Pollo Locco');
 }
