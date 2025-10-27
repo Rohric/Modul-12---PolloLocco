@@ -47,7 +47,7 @@ class Endboss extends MovableObject {
 	attackActive = false;
 	height = 400;
 	width = 200;
-	y=80
+	y = 80;
 
 	constructor() {
 		super();
@@ -108,13 +108,6 @@ class Endboss extends MovableObject {
 		}, 200);
 	}
 
-	startEntrance(targetPosition) {
-		this.targetX = targetPosition;
-		this.entering = true;
-		this.mode = 'walk';
-		this.frameIndex = 0;
-	}
-
 	update() {
 		if (this.entering && this.x > this.targetX) {
 			this.moveLeft();
@@ -126,8 +119,15 @@ class Endboss extends MovableObject {
 		}
 	}
 
+	startEntrance(targetPosition) {
+		this.targetX = targetPosition;
+		this.entering = true;
+		this.mode = 'walk';
+		this.frameIndex = 0;
+	}
+
 	startAttack() {
-		if (this.entering || this.mode === 'dead' || this.attackActive) {
+		if (this.attackActive) {
 			return false;
 		}
 		this.mode = 'attack';
@@ -136,19 +136,32 @@ class Endboss extends MovableObject {
 		return true;
 	}
 
-showHurt() {
-    if (this.mode === 'dead') {
-        return;
-    }
-    this.attackActive = false;   // <— nach Flaschentreffer wieder freigeben
-    this.mode = 'hurt';
-    this.frameIndex = 0;
-}
+	showHurt() {
+		if (this.mode === 'dead') {
+			return;
+		}
+		this.attackActive = false;
+		this.mode = 'hurt';
+		this.frameIndex = 0;
+	}
 
-die() {
-    this.attackActive = false;   // <— falls du ihn später killst
-    this.mode = 'dead';
-    this.frameIndex = 0;
-}
+	hit() {
+		this.energy -= 10;
+		if (this.energy <= 0) {
+			this.energy = 0;
+			this.die();
+		} else {
+			this.showHurt();
+		}
+	}
 
+	die() {
+		this.mode = 'dead';
+		this.frameIndex = 0;
+		this.attackActive = false;
+		setTimeout(() => {
+			this.energy = 0;
+			this.mode = 'removed';
+		}, 1000);
+	}
 }

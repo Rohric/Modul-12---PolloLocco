@@ -134,31 +134,31 @@ class World {
 	spawnAttackChickens() {
 		for (let i = 0; i < 5; i++) {
 			const chicken = new Chicken();
-		chicken.x = Math.random() * (1200) + 719*3+500;
+			chicken.x = Math.random() * 1200 + 719 * 3 + 500;
 			this.level.enemies.push(chicken);
 		}
 	}
 
 	checkThrowableHits() {
-		if (!this.endboss || this.endboss.mode === 'dead') {
-			return;
-		}
 
 		this.throwableObjects = this.throwableObjects.filter((bottle) => {
 			if (this.endboss.isColliding(bottle)) {
 				this.endboss.hit();
-				this.endboss.showHurt();
-				if (this.endboss.energy <= 0) {
-					this.endboss.die();
-				}
 				return false;
 			}
-
 			if (bottle.x > this.character.x + 2000 || bottle.y > this.canvas.height + 200) {
 				return false;
 			}
 			return true;
 		});
+
+		if (this.endboss.mode === 'removed') {
+			const idx = this.level.enemies.indexOf(this.endboss);
+			if (idx !== -1) {
+				this.level.enemies.splice(idx, 1);
+			}
+			this.endboss = null;
+		}
 	}
 
 	draw() {
