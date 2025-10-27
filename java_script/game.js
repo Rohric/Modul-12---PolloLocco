@@ -3,20 +3,12 @@ let world;
 let keyboard = new Keyboard();
 
 function init() {
-	canvas = document.getElementById('canvas');
-	world = new World(canvas, keyboard);
-
-	console.log('My Charakter is', world.character);
+  canvas = canvas || document.getElementById('canvas');
+  world = new World(canvas, keyboard);
+  document.getElementById('gameScreen').classList.remove('d_none');
+  console.log('Start El Pollo Locco');
 }
 
-function startGame() {
-	if (world.Keyboard.P ) {
-		canvas = document.getElementById('game');
-		world = new World(canvas, keyboard);
-
-		console.log('My Charakter is', world.character);
-	}
-}
 
 window.addEventListener('keydown', (event) => {
 	if (event.keyCode == 32) {
@@ -45,12 +37,13 @@ window.addEventListener('keydown', (event) => {
 
 	if (event.keyCode == 80) {
 		keyboard.P = true;
+		init();
 	}
 });
 
 window.addEventListener('keyup', (event) => {
 	if (event.keyCode == 32) {
-		keyboard.SPACE = false;
+		keyboard.SPACE = false;p
 	}
 
 	if (event.keyCode == 37) {
@@ -73,7 +66,4 @@ window.addEventListener('keyup', (event) => {
 		keyboard.D = false;
 	}
   
-  if (event.keyCode == 80) {
-		keyboard.P = false;
-	}
 });
