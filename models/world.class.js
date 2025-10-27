@@ -189,7 +189,7 @@ class World {
 			}
 			this.endboss = null;
 			document.getElementById('canvas').classList.add('d_none');
-			document.getElementById('overlayGameScreen').classList.remove('d_none');
+			document.getElementById('overlayGameScreenWON').classList.remove('d_none');
 		}
 	}
 

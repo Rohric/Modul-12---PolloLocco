@@ -44,21 +44,26 @@
 		<section class="background">
 			<h1>Ell Pollo Locco</h1>
 
+			<canvas
+				class="d_none"
+				id="canvas"
+				width="720"
+				height="480">
+			</canvas>
 
-				<canvas
-					class="d_none"
-					id="canvas"
-					width="720"
-					height="480">
-				</canvas>
-	
-			
-				<div
-					id="overlayGameScreen"
-					class="overlay_game_screen">
-					<h3>el pollo Locco, your favorite BorwserGame</h3>
-					<p>press P to Play</p>
-				</div>
+			<div
+				id="overlayGameScreen"
+				class="overlay_game_screen">
+				<h3>el pollo Locco, your favorite BorwserGame</h3>
+				<p>press P to Play</p>
+			</div>
+
+			<div
+				id="overlayGameScreenWON"
+				class="overlay_game_screen_won d_none">
+				<h3>Congratulations you WON</h3>
+				<p>press R to Reload the Game</p>
+			</div>
 
 			<div
 				id="overlayGameText"
