@@ -47,8 +47,48 @@
 	</head>
 
 	<body>
+		<article
+			id="orientationWarning"
+			class="orientation-warning">
+			<p>For the best game experience, please rotate your device.</p>
+		</article>
+
+		<div class="mobile_controls">
+  <button class="mobile_btn"
+          type="button"
+
+          ontouchstart="keyboard.LEFT = true"
+          ontouchend="keyboard.LEFT = false">
+    <img src="img/buttons/button_left_1.png" alt="Move left">
+  </button>
+
+  <button class="mobile_btn"
+          type="button"
+
+          ontouchstart="keyboard.SPACE = true"
+          ontouchend="keyboard.SPACE = false">
+    <img src="img/buttons/button_jump_1.png" alt="Jump">
+  </button>
+
+  <button class="mobile_btn"
+          type="button"
+
+          ontouchstart="keyboard.RIGHT = true"
+          ontouchend="keyboard.RIGHT = false">
+    <img src="img/buttons/button_right_1.png" alt="Move right">
+  </button>
+
+  <button class="mobile_btn"
+          type="button"
+
+          ontouchstart="keyboard.D = true"
+          ontouchend="keyboard.D = false">
+    <img src="img/buttons/button_throw_1.png" alt="Throw bottle">
+  </button>
+</div>
+
+
 		<section class="background">
-			
 			<h1>El Pollo Locco</h1>
 
 			<canvas
@@ -84,7 +124,7 @@
 					<p>'Space' for jump</p>
 					<p>SMASH! 'jump' on a Chicken</p>
 				</div>
-				
+
 				<div class="overlay_game_text_col">
 					<p>Press 'D' to throw a Bottle</p>
 					<p>press 'R' to reload and start a new Game</p>
@@ -92,20 +132,5 @@
 				</div>
 			</article>
 		</section>
-
-		<article
-			id="orientationWarning"
-			class="orientation-warning">
-			<p>For the best game experience, please rotate your device.</p>
-		</article>
-
-		<article id="gameButtons" class="game_buttons" >
-
-			<div>button left</div>
-			<div>button jump</div>
-			<div>button right</div>
-			<div>button throw</div>
-
-		</article>
 	</body>
 </html>
