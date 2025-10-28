@@ -162,15 +162,22 @@ canvas {
 .mobile_controls {
   position: fixed;
   bottom: 32px;
-  left: 50%;
-  transform: translateX(-50%);
   display: none;
+  flex-direction: column;
   gap: 18px;
-  padding: 12px 18px;
+  padding: 12px 16px;
   background: rgba(0, 0, 0, 0.35);
-  border-radius: 20px;
   border: 2px solid rgba(255, 158, 0, 0.6);
+  border-radius: 20px;
   z-index: 50;
+}
+
+.mobile_controls_left {
+  left: 24px;
+}
+
+.mobile_controls_right {
+  right: 24px;
 }
 
 .mobile_btn {
@@ -178,7 +185,6 @@ canvas {
   border: none;
   background: none;
   padding: 0;
-  margin: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -190,26 +196,84 @@ canvas {
   display: block;
 }
 
-.orientation-warning {
-  position: fixed;
-  inset: 0;
-  display: none;
-  place-items: center;
-  background: rgba(0,0,0,0.8);
-  color: #fff;
-  z-index: 999;
-}
-.orientation-warning.show {
-  display: grid;
-}
-
-
+/* Buttons nur auf kleineren Viewports zeigen */
 @media (max-width: 1024px) {
   .mobile_controls {
     display: flex;
   }
 }
 
-@media (orientation: landscape) { /* Querformat */ }
-@media (orientation: portrait)  { /* Hochformat */ }
- 
+
+.mobile_btn img {
+	width: 72px;
+	height: 72px;
+	display: block;
+}
+
+.overlay_btn {
+	display: none;
+	padding: 12px 28px;
+	border: 2px solid rgba(255, 158, 0, 0.8);
+	border-radius: 16px;
+	background: rgba(0, 0, 0, 0.65);
+	color: #ffdc04;
+	font-size: 24px;
+	font-family: inherit;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	cursor: pointer;
+	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+}
+
+.overlay_btn:hover,
+.overlay_btn:active {
+	background: rgba(255, 158, 0, 0.85);
+	color: #1a1610;
+}
+
+.orientation-warning {
+	position: fixed;
+	inset: 0;
+	display: none;
+	place-items: center;
+	background: rgba(0, 0, 0, 0.8);
+	color: #fff;
+	z-index: 999;
+}
+.orientation-warning.show {
+	display: grid;
+}
+
+@media (max-width: 1400px) {
+	.mobile_controls {
+		display: flex;
+	}
+
+
+	.overlay_game_screen h4,
+	.overlay_game_text {
+		display: none;
+	}
+	.overlay_game_screen button {
+		display: unset;
+	}
+
+	.overlay_game_screen h4,
+	.overlay_game_screen_won h4,
+	.overlay_game_screen_lost h4 {
+		display: none;
+	}
+
+	.overlay_btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+	}
+}
+
+@media (orientation: landscape) {
+	/* Querformat */
+}
+@media (orientation: portrait) {
+	/* Hochformat */
+}

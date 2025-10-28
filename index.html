@@ -2,14 +2,10 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>El Polloo Locco</title>
 
-		<link
-			rel="stylesheet"
-			href="style.css" />
+		<link rel="stylesheet" href="style.css" />
 		<style>
 			@font-face {
 				font-family: 'zabras';
@@ -47,78 +43,75 @@
 	</head>
 
 	<body>
-		<article
-			id="orientationWarning"
-			class="orientation-warning">
+		<article id="orientationWarning" class="orientation-warning">
 			<p>For the best game experience, please rotate your device.</p>
 		</article>
 
-		<div class="mobile_controls">
-  <button class="mobile_btn"
-          type="button"
+		<!-- Linke Seite: Bewegung -->
+		<div class="mobile_controls mobile_controls_left">
+			<button
+				class="mobile_btn"
+				type="button"
+				ontouchstart="keyboard.LEFT = true"
+				ontouchend="keyboard.LEFT = false">
+				<img src="img/buttons/button_left_1.png" alt="Move left" />
+			</button>
 
-          ontouchstart="keyboard.LEFT = true"
-          ontouchend="keyboard.LEFT = false">
-    <img src="img/buttons/button_left_1.png" alt="Move left">
-  </button>
+			<button
+				class="mobile_btn"
+				type="button"
+				ontouchstart="keyboard.RIGHT = true"
+				ontouchend="keyboard.RIGHT = false">
+				<img src="img/buttons/button_right_1.png" alt="Move right" />
+			</button>
+		</div>
 
-  <button class="mobile_btn"
-          type="button"
+		<!-- Rechte Seite: Aktionen -->
+		<div class="mobile_controls mobile_controls_right">
+			<button
+				class="mobile_btn"
+				type="button"
 
-          ontouchstart="keyboard.SPACE = true"
-          ontouchend="keyboard.SPACE = false">
-    <img src="img/buttons/button_jump_1.png" alt="Jump">
-  </button>
+				ontouchstart="keyboard.SPACE = true"
+				ontouchend="keyboard.SPACE = false">
+				<img src="img/buttons/button_jump_1.png" alt="Jump" />
+			</button>
 
-  <button class="mobile_btn"
-          type="button"
-
-          ontouchstart="keyboard.RIGHT = true"
-          ontouchend="keyboard.RIGHT = false">
-    <img src="img/buttons/button_right_1.png" alt="Move right">
-  </button>
-
-  <button class="mobile_btn"
-          type="button"
-
-          ontouchstart="keyboard.D = true"
-          ontouchend="keyboard.D = false">
-    <img src="img/buttons/button_throw_1.png" alt="Throw bottle">
-  </button>
-</div>
-
+			<button
+				class="mobile_btn"
+				type="button"
+				ontouchstart="keyboard.D = true"
+				ontouchend="keyboard.D = false">
+				<img src="img/buttons/button_throw_1.png" alt="Throw bottle" />
+			</button>
+		</div>
 
 		<section class="background">
 			<h1>El Pollo Locco</h1>
 
-			<canvas
-				class="d_none"
-				id="canvas"
-				width="720"
-				height="480">
-			</canvas>
+			<canvas class="d_none" id="canvas" width="720" height="480"> </canvas>
 
-			<article
-				id="overlayGameScreen"
-				class="overlay_game_screen">
+			<article id="overlayGameScreen" class="overlay_game_screen">
 				<h4>press P to Play</h4>
+				<button
+					class="overlay_btn overlay_btn_play"
+					type="button"
+					onclick="init(); document.getElementById('overlayGameScreen').classList.add('d_none'); document.getElementById('canvas').classList.remove('d_none');">
+					Play
+				</button>
 			</article>
 
-			<article
-				id="overlayGameScreenWON"
-				class="overlay_game_screen_won d_none">
+			<article id="overlayGameScreenWON" class="overlay_game_screen_won d_none">
 				<h4>press R to Reload the Game</h4>
+				<button class="overlay_btn overlay_btn_reload" type="button" onclick="window.location.reload();">Reload</button>
 			</article>
 
-			<article
-				id="overlayGameScreenLOST"
-				class="overlay_game_screen_lost d_none">
+			<article id="overlayGameScreenLOST" class="overlay_game_screen_lost d_none">
 				<h4>press R to Reload the Game</h4>
+				<button class="overlay_btn overlay_btn_reload" type="button" onclick="window.location.reload();">Reload</button>
 			</article>
 
-			<article
-				id="overlayGameText"
-				class="overlay_game_text">
+			<article id="overlayGameText" class="overlay_game_text">
 				<div class="overlay_game_text_col">
 					<p>use Arrow 'Right' and 'Left' to move</p>
 					<p>'Space' for jump</p>
@@ -127,8 +120,8 @@
 
 				<div class="overlay_game_text_col">
 					<p>Press 'D' to throw a Bottle</p>
+					<p>press 'P' to a start the Game</p>
 					<p>press 'R' to reload and start a new Game</p>
-					<p>press 'P' for a Quickstart</p>
 				</div>
 			</article>
 		</section>
