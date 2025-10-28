@@ -21,6 +21,22 @@ canvas {
 	background-color:none;
 }
 
+h4 {
+  font-size: 35px;
+  margin: 0;
+  color: transparent;
+  background: linear-gradient(135deg, #FFDC04 0%, #FF9E00 45%, #FF5A1F 100%);
+  background-clip: text;
+  -webkit-background-clip: text; /* sorgt für Gradient im Text in WebKit */
+  filter:
+    drop-shadow(2px 0 0 #000)
+    drop-shadow(-2px 0 0 #000)
+    drop-shadow(0 2px 0 #000)
+    drop-shadow(0 -2px 0 #000);
+}
+
+
+
 .overlay_game_screen {
 	/* background-color: rgb(255, 174, 0); */
 	background-image: url('img/9_intro_outro_screens/start/startscreen_1.png');
@@ -33,6 +49,8 @@ canvas {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: end;
+	padding-bottom: 85px;
 	
 }
 
