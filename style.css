@@ -225,11 +225,6 @@ canvas {
 	box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
 }
 
-.overlay_btn:hover,
-.overlay_btn:active {
-	background: rgba(255, 158, 0, 0.85);
-	color: #1a1610;
-}
 
 .orientation-warning {
 	position: fixed;
@@ -276,4 +271,26 @@ canvas {
 }
 @media (orientation: portrait) {
 	/* Hochformat */
+}
+
+/* Smartphones quer */
+@media only screen and (max-width: 720px) {
+	canvas,
+	.overlay_game_screen,
+	.overlay_game_screen_won,
+	.overlay_game_screen_lost {
+		width: 100%;
+		height: auto;
+	}
+}
+
+/* Smartphones hoch */
+@media only screen and (max-height: 480px) {
+	canvas,
+	.overlay_game_screen,
+	.overlay_game_screen_won,
+	.overlay_game_screen_lost {
+		height: 100vh;
+		width: auto;
+	}
 }
