@@ -73,3 +73,14 @@ window.addEventListener('keyup', (event) => {
 		keyboard.D = false;
 	}
 });
+/* ===== Responsive Area ===== */
+document.addEventListener('DOMContentLoaded', () => {
+  const warning = document.getElementById('orientationWarning');
+  const toggleOrientationWarning = () =>
+    warning.classList.toggle('show', window.matchMedia('(orientation: portrait)').matches);
+
+  ['resize', 'orientationchange'].forEach(eventName =>
+    window.addEventListener(eventName, toggleOrientationWarning)
+  );
+  toggleOrientationWarning();
+});

@@ -156,3 +156,25 @@ canvas {
 .d_none {
 	display: none !important;
 }
+
+/* ===== Responsive Area ===== */
+
+.orientation-warning {
+  position: fixed;
+  inset: 0;
+  display: none;
+  place-items: center;
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  z-index: 999;
+}
+.orientation-warning.show {
+  display: grid;
+}
+
+
+@media (orientation: landscape) { /* Querformat */ }
+@media (orientation: portrait)  { /* Hochformat */ }
+ 
+@media (max-width: 1024px) {
+}
