@@ -12,6 +12,7 @@ class Chicken extends MovableObject {
 
 	images_dead = ['img/3_enemies_chicken/chicken_normal/2_dead/dead.png'];
 
+	// Legt Startbild, Position und Geschwindigkeit des Huhns fest.
 	constructor() {
 		super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
 
@@ -27,6 +28,7 @@ class Chicken extends MovableObject {
 		}
 	}
 
+	// Bewegt das Huhn nach links und spielt die Laufanimation.
 	animate() {
 		setInterval(() => {
 			if (this.dead) {
@@ -43,6 +45,7 @@ class Chicken extends MovableObject {
 		}, 200);
 	}
 
+	// Schaltet das Huhn in den Todeszustand und stoppt die Bewegung.
 	die() {
 		this.dead = true;
 		this.loadImage(this.images_dead[0]);

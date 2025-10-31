@@ -1,4 +1,5 @@
 class StatusBar_Health extends StatusBar {
+  // Setzt die Lebensanzeige mit blauer Optik und vollem Startwert auf.
   constructor() {
     super({
       images: [

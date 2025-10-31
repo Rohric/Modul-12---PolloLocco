@@ -2,6 +2,7 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 
+// Startet eine neue Spielwelt und setzt alle Laufzeiten zurück.
 function init() {
 	if (world) {
 		world.destroy();
@@ -13,6 +14,7 @@ function init() {
 	console.log('Start El Pollo Locco');
 }
 
+// Reagiert auf Tastendrücke und steuert Spielfunktionen direkt.
 window.addEventListener('keydown', (event) => {
 	
 	 if (event.keyCode === 82) {  // R
@@ -54,6 +56,7 @@ window.addEventListener('keydown', (event) => {
 	}
 });
 
+// Hebt gesetzte Tastensignale wieder auf, sobald die Taste losgelassen wird.
 window.addEventListener('keyup', (event) => {
 	if (event.keyCode == 32) {
 		keyboard.SPACE = false;
@@ -84,6 +87,7 @@ window.addEventListener('keyup', (event) => {
 	}
 });
 /* ===== Responsive Area ===== */
+// Blendet den Rotationshinweis ein, wenn das Gerät im Hochformat genutzt wird.
 document.addEventListener('DOMContentLoaded', () => {
   const warning = document.getElementById('orientationWarning');
   const toggleOrientationWarning = () =>

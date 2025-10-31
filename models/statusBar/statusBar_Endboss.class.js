@@ -1,4 +1,5 @@
 class StatusBar_Endboss extends StatusBar {
+	// Definiert den Endboss-Lebensbalken, der später ins Bild gleitet.
 	constructor() {
 		super({
 			images: [

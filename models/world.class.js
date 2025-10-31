@@ -19,6 +19,7 @@ class World {
 	endboss = null;
 	bossAttackInterval = null;
 
+	// Erzeugt die Spielwelt, verbindet sie mit dem Canvas und startet die Hauptschleifen.
 	constructor(canvas) {
 		this.ctx = canvas.getContext('2d');
 		this.canvas = canvas;
@@ -33,6 +34,7 @@ class World {
 		this.character.world = this;
 	}
 
+	// Startet die zyklischen Prüfungen für Kollisionen und sammelbare Objekte.
 	run() {
 		this.collisionInterval = setInterval(() => {
 			this.checkCollisions();
@@ -45,6 +47,7 @@ class World {
 		}, 200);
 	}
 
+	// Stoppt alle laufenden Intervalle sowie die Zeichenschleife.
 	destroy() {
 		if (this.collisionInterval) {
 			clearInterval(this.collisionInterval);
@@ -64,6 +67,7 @@ class World {
 		}
 	}
 
+	// Lässt bei Tastendruck neue Flaschen entstehen und verwaltet den Vorrat.
 	checkThrowObjects() {
 		if (this.keyboard.D && this.statusBar_Bottle.percentage > 0) {
 			const direction = this.character.otherDirection ? -1 : 1;
@@ -80,6 +84,7 @@ class World {
 		}
 	}
 
+	// Prüft Berührungen zwischen Spieler und Gegnern und reagiert entsprechend.
 	checkCollisions() {
 		this.level.enemies.forEach((enemy) => {
 			if (!this.character.isColliding(enemy)) {
@@ -115,6 +120,7 @@ class World {
 		});
 	}
 
+	// Hebt Münzen und Flaschen ins Inventar, sobald der Spieler sie berührt.
 	checkCollectables() {
 		this.level.collectableCoin.forEach((coin) => {
 			if (coin.isCollect(this.character)) {
@@ -137,6 +143,7 @@ class World {
 		});
 	}
 
+	// Startet den Bosskampf, sobald der Spieler weit genug gelaufen ist.
 	checkBossEntrance() {
 		let triggerX = 2100;
 		let stopX = 719 * 3 + 200;
@@ -155,6 +162,7 @@ class World {
 		}
 	}
 
+	// Lässt den Endboss regelmäßig besondere Angriffe vorbereiten.
 	startBossAttackLoop() {
 		if (this.bossAttackInterval || !this.endboss) {
 			return;
@@ -169,6 +177,7 @@ class World {
 		}, 5000);
 	}
 
+	// Schiebt die Anzeige des Endboss-Lebensbalkens zur sichtbaren Position.
 	slideEndbossBar() {
 		const targetX = 10;
 		let speed = 6;
@@ -186,6 +195,7 @@ class World {
 		requestAnimationFrame(move);
 	}
 
+	// Spawnt angreifende Hühner in Bossphasen.
 	spawnAttackChickens() {
 		for (let i = 0; i < 5; i++) {
 			const chicken = new Chicken();
@@ -194,6 +204,7 @@ class World {
 		}
 	}
 
+	// Verarbeitet Treffer durch geworfene Flaschen und beendet den Bosskampf.
 	checkThrowableHits() {
 		if (!this.endboss) {
 			this.throwableObjects = this.throwableObjects.filter(
@@ -225,6 +236,7 @@ class World {
 		}
 	}
 
+	// Zeichnet alle Spielobjekte und wiederholt die Animation per requestAnimationFrame.
 	draw() {
 		this.checkBossEntrance();
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -261,12 +273,14 @@ class World {
 		this.animationId = requestAnimationFrame(() => this.draw());
 	}
 
+	// Fügt eine Liste von Objekten nacheinander zur Zeichenfläche hinzu.
 	addObjectsToMap(objects) {
 		objects.forEach((object) => {
 			this.addToMap(object);
 		});
 	}
 
+	// Platziert ein einzelnes Objekt unter Berücksichtigung seiner Blickrichtung.
 	addToMap(MovableObject) {
 		if (MovableObject.otherDirection) {
 			this.flipImage(MovableObject);
@@ -280,6 +294,7 @@ class World {
 		}
 	}
 
+	// Spiegelt ein Bild horizontal, damit Figuren nach links schauen können.
 	flipImage(MovableObject) {
 		this.ctx.save();
 		this.ctx.translate(MovableObject.width, 0);
@@ -287,6 +302,7 @@ class World {
 		MovableObject.x = MovableObject.x * -1;
 	}
 
+	// Hebt die vorherige Spiegelung wieder auf.
 	flipImageBack(MovableObject) {
 		MovableObject.x = MovableObject.x * -1;
 		this.ctx.restore();

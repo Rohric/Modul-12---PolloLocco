@@ -53,6 +53,8 @@ class Character extends MovableObject {
 		'img/2_character_pepe/4_hurt/H-43.png',
 	];
 	world;
+
+	// Lädt alle Charakter-Sprites und startet Bewegung sowie Schwerkraft.
 	constructor() {
 		super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
 		this.loadImages(this.images_idle);
@@ -65,6 +67,7 @@ class Character extends MovableObject {
 		this.applyGravity();
 	}
 
+	// Verarbeitet Tastenbefehle, bewegt den Spieler und spielt passende Animationen.
 	animate() {
 		setInterval(() => {
 			if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
@@ -100,10 +103,12 @@ class Character extends MovableObject {
 		}, 60);
 	}
 
+	// Gibt dem Spieler eine Sprunggeschwindigkeit nach oben.
 	jump() {
 		this.speedY = 30;
 	}
 
+	// Prüft, ob der Charakter Gegner von oben trifft und löst den Schlag aus.
 	smash(enemy) {
 		if (this.y + this.height - enemy.y < 20 && this.speedY < 0) {
 			enemy.energy = 0 ;

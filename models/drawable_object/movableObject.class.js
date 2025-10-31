@@ -9,6 +9,7 @@ class MovableObject extends DrawableObject {
 
   otherDirection = false;
 
+  // Simuliert Schwerkraft und bewegt das Objekt vertikal.
   applyGravity() {
     setInterval(() => {
       if (this.isAboveGround() || this.speedY > 0) {
@@ -18,6 +19,7 @@ class MovableObject extends DrawableObject {
     }, 1000 / 25);
   }
 
+  // Prüft, ob sich das Objekt über dem Boden befindet.
   isAboveGround() {
     if (this instanceof ThrowablaObject) {
       return true;
@@ -26,6 +28,7 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  // Ermittelt, ob zwei Objekte sich überlappen.
   isColliding(MovableObject) {
     return (
       this.x + this.width > MovableObject.x &&
@@ -35,6 +38,7 @@ class MovableObject extends DrawableObject {
     );
   }
 
+  // Reduziert die Energie und speichert den Zeitpunkt eines Treffers.
   hit() {
     this.energy -= 5;
     if (this.energy < 0) {
@@ -44,16 +48,19 @@ class MovableObject extends DrawableObject {
     }
   }
 
+  // Liefert zurück, ob das Objekt kürzlich Schaden erhalten hat.
   isHurt() {
     let timepassed = new Date().getTime() - this.lastHit;
     timepassed = timepassed / 1000;
     return timepassed < 0.5;
   }
 
+  // Prüft, ob die Energie vollständig verbraucht ist.
   isDead() {
     return this.energy == 0;
   }
 
+  // Wechselt das angezeigte Bild innerhalb einer Animationssequenz.
   playAnimation(images) {
     let intervall = this.currentImage % images.length;
     let path = images[intervall];
@@ -61,10 +68,12 @@ class MovableObject extends DrawableObject {
     this.currentImage++;
   }
 
+  // Bewegt das Objekt nach rechts mit der aktuellen Geschwindigkeit.
   moveRight() {
     console.log("Moving right");
     this.x += this.speed;
   }
+  // Bewegt das Objekt nach links mit der aktuellen Geschwindigkeit.
   moveLeft() {
     this.x -= this.speed;
   }

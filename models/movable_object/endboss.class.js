@@ -49,6 +49,7 @@ class Endboss extends MovableObject {
 	width = 200;
 	y = 80;
 
+	// Lädt sämtliche Boss-Animationen und startet die Grundbewegung.
 	constructor() {
 		super();
 		this.loadImages(this.images_walking);
@@ -62,6 +63,7 @@ class Endboss extends MovableObject {
 		this.animate();
 	}
 
+	// Wählt die passende Animationsliste anhand des aktuellen Zustands.
 	getCurrentImages() {
 		if (this.mode === 'walk') {
 			return this.images_walking;
@@ -78,6 +80,7 @@ class Endboss extends MovableObject {
 		return this.images_alert;
 	}
 
+	// Aktualisiert den Bildwechsel des Bosses in regelmäßigen Abständen.
 	animate() {
 		setInterval(() => {
 			const images = this.getCurrentImages();
@@ -108,6 +111,7 @@ class Endboss extends MovableObject {
 		}, 200);
 	}
 
+	// Steuert den Laufweg während des Boss-Eintritts in die Arena.
 	update() {
 		if (this.entering && this.x > this.targetX) {
 			this.moveLeft();
@@ -119,6 +123,7 @@ class Endboss extends MovableObject {
 		}
 	}
 
+	// Startet die Einlaufanimation auf eine bestimmte Zielposition.
 	startEntrance(targetPosition) {
 		this.targetX = targetPosition;
 		this.entering = true;
@@ -126,6 +131,7 @@ class Endboss extends MovableObject {
 		this.frameIndex = 0;
 	}
 
+	// Aktiviert den Angriffsmodus, sofern kein Angriff bereits aktiv ist.
 	startAttack() {
 		if (this.attackActive) {
 			return false;
@@ -136,6 +142,7 @@ class Endboss extends MovableObject {
 		return true;
 	}
 
+	// Zeigt die Trefferanimation und unterbricht laufende Angriffe.
 	showHurt() {
 		if (this.mode === 'dead') {
 			return;
@@ -145,6 +152,7 @@ class Endboss extends MovableObject {
 		this.frameIndex = 0;
 	}
 
+	// Zieht dem Boss Lebenspunkte ab und schaltet auf Tod, wenn nötig.
 	hit() {
 		this.energy -= 10;
 		if (this.energy <= 0) {
@@ -155,6 +163,7 @@ class Endboss extends MovableObject {
 		}
 	}
 
+	// Spielt die Todesanimation und markiert den Boss anschließend als entfernt.
 	die() {
 		this.mode = 'dead';
 		this.frameIndex = 0;

@@ -2,6 +2,7 @@ class Cloud extends MovableObject {
 	y = 50;
 	width = 500;
 	height = 250;
+	// Wählt zufällige Startposition und Bild für eine Wolke.
 	constructor() {
 		super().loadImage('img/5_background/layers/4_clouds/1.png');
 
@@ -9,6 +10,7 @@ class Cloud extends MovableObject {
 		this.animate();
 	}
 
+	// Lässt die Wolke kontinuierlich nach links gleiten.
 	animate() {
 		setInterval(() => {
 			this.moveLeft();

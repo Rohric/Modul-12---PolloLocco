@@ -2,6 +2,7 @@ class StatusBar extends DrawableObject {
 	images = [];
 	percentage = 0;
 
+	// Initialisiert eine Statusleiste mit Bildersatz und Startwert.
 	constructor({ images = [], x = 10, y = 0, width = 200, height = 60, percentage = 0 } = {}) {
 		super();
 		this.images = images;
@@ -13,6 +14,7 @@ class StatusBar extends DrawableObject {
 		this.setPercentage(percentage);
 	}
 
+	// Aktualisiert den Prozentwert und setzt das passende Bild ein.
 	setPercentage(percentage) {
 		this.percentage = Math.max(0, Math.min(percentage, 100));
 		const path = this.images[this.resolveImageIndex()];
@@ -21,6 +23,7 @@ class StatusBar extends DrawableObject {
 		}
 	}
 
+	// Berechnet den Index des passenden Anzeigebildes.
 	resolveImageIndex() {
 		if (this.percentage >= 100) {
 			return 5;

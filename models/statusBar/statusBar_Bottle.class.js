@@ -1,4 +1,5 @@
 class StatusBar_Bottle extends StatusBar {
+  // Konfiguriert die Flaschenanzeige in Orange mit Position am oberen Rand.
   constructor() {
     super({
       images: [

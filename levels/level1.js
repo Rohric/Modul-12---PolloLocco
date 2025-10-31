@@ -1,5 +1,6 @@
 
 level1 = new Level
+// Erzeugt alle Gegner, Sammlerstücke und Hintergründe für Level 1.
 function createLevel() {
 	return new Level(
 		[

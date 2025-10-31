@@ -1,4 +1,5 @@
 class StatusBar_Coin extends StatusBar {
+  // Stellt die Münzanzeige mit grüner Skala bereit.
   constructor() {
     super({
       images: [
