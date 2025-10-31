@@ -44,7 +44,10 @@ class World {
 
 	checkThrowObjects() {
 		if (this.keyboard.D && this.statusBar_Bottle.percentage > 0) {
-			let bottle = new ThrowablaObject(this.character.x + 100, this.character.y + 100);
+			const direction = this.character.otherDirection ? -1 : 1;
+			const offsetX = this.character.x + (direction === 1 ? 100 : -60);
+			const offsetY = this.character.y + 100;
+			let bottle = new ThrowablaObject(offsetX, offsetY, direction);
 			this.throwableObjects.push(bottle);
 
 			let percent = this.statusBar_Bottle.percentage - 10;
