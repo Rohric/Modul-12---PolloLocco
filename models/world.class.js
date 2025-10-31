@@ -170,6 +170,13 @@ class World {
 	}
 
 	checkThrowableHits() {
+		if (!this.endboss) {
+			this.throwableObjects = this.throwableObjects.filter(
+				(bottle) => bottle.x <= this.character.x + 2000 && bottle.y <= this.canvas.height + 200
+			);
+			return;
+		}
+
 		this.throwableObjects = this.throwableObjects.filter((bottle) => {
 			if (this.endboss.isColliding(bottle)) {
 				this.endboss.hit();
