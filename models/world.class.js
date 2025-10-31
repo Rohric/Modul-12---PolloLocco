@@ -11,6 +11,9 @@ class World {
 	statusBar_Coin = new StatusBar_Coin();
 	statusBar_Endboss = new StatusBar_Endboss();
 	throwableObjects = [];
+	collisionInterval = null;
+	collectableInterval = null;
+	animationId = null;
 
 	bossTriggered = false;
 	endboss = null;
@@ -31,15 +34,34 @@ class World {
 	}
 
 	run() {
-		setInterval(() => {
+		this.collisionInterval = setInterval(() => {
 			this.checkCollisions();
 			this.checkThrowableHits();
 		}, 1000 / 60);
 
-		setInterval(() => {
+		this.collectableInterval = setInterval(() => {
 			this.checkCollectables();
 			this.checkThrowObjects();
 		}, 200);
+	}
+
+	destroy() {
+		if (this.collisionInterval) {
+			clearInterval(this.collisionInterval);
+			this.collisionInterval = null;
+		}
+		if (this.collectableInterval) {
+			clearInterval(this.collectableInterval);
+			this.collectableInterval = null;
+		}
+		if (this.bossAttackInterval) {
+			clearInterval(this.bossAttackInterval);
+			this.bossAttackInterval = null;
+		}
+		if (this.animationId) {
+			cancelAnimationFrame(this.animationId);
+			this.animationId = null;
+		}
 	}
 
 	checkThrowObjects() {
@@ -236,10 +258,7 @@ class World {
 
 		this.ctx.translate(-this.camera_x, 0);
 
-		let self = this;
-		requestAnimationFrame(function () {
-			self.draw();
-		});
+		this.animationId = requestAnimationFrame(() => this.draw());
 	}
 
 	addObjectsToMap(objects) {

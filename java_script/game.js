@@ -3,8 +3,12 @@ let world;
 let keyboard = new Keyboard();
 
 function init() {
-	canvas = canvas || document.getElementById('canvas');
-	level1 = createLevel()
+	if (world) {
+		world.destroy();
+	}
+	keyboard = new Keyboard();
+	canvas = document.getElementById('canvas');
+	level1 = createLevel();
 	world = new World(canvas, keyboard);
 	console.log('Start El Pollo Locco');
 }
@@ -44,6 +48,8 @@ window.addEventListener('keydown', (event) => {
 		keyboard.P = true;
 		init();
 		document.getElementById('overlayGameScreen').classList.add('d_none');
+		document.getElementById('overlayGameScreenWON').classList.add('d_none');
+		document.getElementById('overlayGameScreenLOST').classList.add('d_none');
 		document.getElementById('canvas').classList.remove('d_none');
 	}
 });
@@ -71,6 +77,10 @@ window.addEventListener('keyup', (event) => {
 
 	if (event.keyCode == 68) {
 		keyboard.D = false;
+	}
+
+	if (event.keyCode == 80) {
+		keyboard.P = false;
 	}
 });
 /* ===== Responsive Area ===== */
