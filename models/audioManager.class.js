@@ -17,7 +17,7 @@ class AudioManager {
 			// Sprunggeraeusch von Pepe.
 			pepe_jump: this.createAudio('audio/pepe_jump_sound.mp3'),
 			// Laufgeraeusch von Pepe.
-			pepe_walk: this.createAudio('audio/pepe_walk_sound.mp3'),
+			pepe_walk: this.createAudio('audio/pepe_walk_sound.mp3', { loop: true, volume: 0.5 }),
 		};
 		// Speichert, ob das Spiel aktuell stumm geschaltet ist.
 		this.isMuted = false;
@@ -61,6 +61,16 @@ class AudioManager {
 		audio.currentTime = 0;
 		// Startet die Wiedergabe; ignoriert blockierte Autoplay-Versuche.
 		audio.play().catch(() => {});
+	}
+
+	// Stoppt eine Tonspur und setzt sie auf den Anfang zurueck.
+	stopSound(name) {
+		const audio = this.tracks[name];
+		if (!audio) {
+			return;
+		}
+		audio.pause();
+		audio.currentTime = 0;
 	}
 
 	// Liefert die komplette Track-Sammlung, z. B. fuer Debugging oder eigene Buttons.

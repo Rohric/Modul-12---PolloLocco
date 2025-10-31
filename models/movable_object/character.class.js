@@ -53,6 +53,7 @@ class Character extends MovableObject {
 		'img/2_character_pepe/4_hurt/H-43.png',
 	];
 	world;
+	walkingSoundActive = false;
 
 	// Lädt alle Charakter-Sprites und startet Bewegung sowie Schwerkraft.
 	constructor() {
@@ -70,12 +71,15 @@ class Character extends MovableObject {
 	// Verarbeitet Tastenbefehle, bewegt den Spieler und spielt passende Animationen.
 	animate() {
 		setInterval(() => {
-			if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
+			const movingRight = this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
+			const movingLeft = this.world.keyboard.LEFT && this.x > -600;
+
+			if (movingRight) {
 				this.moveRight();
 				this.otherDirection = false;
 				// this.walking_sound.play()
 			}
-			if (this.world.keyboard.LEFT && this.x > -600) {
+			if (movingLeft) {
 				this.moveLeft();
 				this.otherDirection = true;
 				// this.walking_sound.play()
@@ -84,6 +88,17 @@ class Character extends MovableObject {
 			if (this.world.keyboard.SPACE && !this.isAboveGround()) {
 				this.jump();
 			}
+
+			const movingHorizontally = movingRight || movingLeft;
+			const grounded = !this.isAboveGround();
+			const ableToWalkSound = !this.isDead() && !this.isHurt();
+
+			if (movingHorizontally && grounded && ableToWalkSound) {
+				this.startWalkingSound();
+			} else {
+				this.stopWalkingSound();
+			}
+
 			this.world.camera_x = -this.x + 100;
 		}, 1000 / 60);
 
@@ -106,7 +121,23 @@ class Character extends MovableObject {
 	// Gibt dem Spieler eine Sprunggeschwindigkeit nach oben.
 	jump() {
 		this.speedY = 30;
-		   this.world?.audio?.playSound('pepe_jump')
+		this.world.audio.playSound('pepe_jump');
+	}
+
+	startWalkingSound() {
+		if (this.walkingSoundActive) {
+			return;
+		}
+		this.world.audio.playSound('pepe_walk');
+		this.walkingSoundActive = true;
+	}
+
+	stopWalkingSound() {
+		if (!this.walkingSoundActive) {
+			return;
+		}
+		this.world.audio.stopSound('pepe_walk');
+		this.walkingSoundActive = false;
 	}
 
 	// Prüft, ob der Charakter Gegner von oben trifft und löst den Schlag aus.
