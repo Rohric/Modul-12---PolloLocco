@@ -1,6 +1,7 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let audioManager;
 
 // Startet eine neue Spielwelt und setzt alle Laufzeiten zurück.
 function init() {
@@ -9,19 +10,20 @@ function init() {
 	}
 	keyboard = new Keyboard();
 	canvas = document.getElementById('canvas');
+	audioManager = new AudioManager();
 	level1 = createLevel();
-	world = new World(canvas, keyboard);
+	world = new World(canvas, keyboard, audioManager);
 	console.log('Start El Pollo Locco');
 }
 
 // Reagiert auf Tastendrücke und steuert Spielfunktionen direkt.
 window.addEventListener('keydown', (event) => {
-	
-	 if (event.keyCode === 82) {  // R
-    window.location.reload();
-    return;
-  }
-  
+	if (event.keyCode === 82) {
+		// R
+		window.location.reload();
+		return;
+	}
+
 	if (event.keyCode == 32) {
 		keyboard.SPACE = true;
 	}
@@ -89,12 +91,10 @@ window.addEventListener('keyup', (event) => {
 /* ===== Responsive Area ===== */
 // Blendet den Rotationshinweis ein, wenn das Gerät im Hochformat genutzt wird.
 document.addEventListener('DOMContentLoaded', () => {
-  const warning = document.getElementById('orientationWarning');
-  const toggleOrientationWarning = () =>
-    warning.classList.toggle('show', window.matchMedia('(orientation: portrait)').matches);
+	const warning = document.getElementById('orientationWarning');
+	const toggleOrientationWarning = () =>
+		warning.classList.toggle('show', window.matchMedia('(orientation: portrait)').matches);
 
-  ['resize', 'orientationchange'].forEach(eventName =>
-    window.addEventListener(eventName, toggleOrientationWarning)
-  );
-  toggleOrientationWarning();
+	['resize', 'orientationchange'].forEach((eventName) => window.addEventListener(eventName, toggleOrientationWarning));
+	toggleOrientationWarning();
 });

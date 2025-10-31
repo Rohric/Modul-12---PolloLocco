@@ -19,11 +19,14 @@ class World {
 	endboss = null;
 	bossAttackInterval = null;
 
+	audio = null;
+
 	// Erzeugt die Spielwelt, verbindet sie mit dem Canvas und startet die Hauptschleifen.
-	constructor(canvas) {
+	constructor(canvas, keyboard, audioManager) {
 		this.ctx = canvas.getContext('2d');
 		this.canvas = canvas;
-		this.keyboard = keyboard;
+		this.keyboard = keyboard || new Keyboard();
+		this.audio = audioManager || null;
 		this.endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
 		this.draw();
 		this.setWorld();
@@ -97,6 +100,7 @@ class World {
 
 			if (this.character.smash(enemy)) {
 				enemy.die();
+				this.audio?.playSound('chicken_death'); 
 
 				setTimeout(() => {
 					const idx = this.level.enemies.indexOf(enemy);
@@ -208,7 +212,7 @@ class World {
 	checkThrowableHits() {
 		if (!this.endboss) {
 			this.throwableObjects = this.throwableObjects.filter(
-				(bottle) => bottle.x <= this.character.x + 2000 && bottle.y <= this.canvas.height + 200
+				(bottle) => bottle.x <= this.character.x + 2000 && bottle.y <= this.canvas.height + 200,
 			);
 			return;
 		}
@@ -216,6 +220,8 @@ class World {
 		this.throwableObjects = this.throwableObjects.filter((bottle) => {
 			if (this.endboss.isColliding(bottle)) {
 				this.endboss.hit();
+				this.audio.playSound('boss_hit');
+
 				this.statusBar_Endboss.setPercentage(this.endboss.energy);
 				return false;
 			}
@@ -226,6 +232,7 @@ class World {
 		});
 
 		if (this.endboss.mode === 'removed') {
+			  this.audio?.playSound('endboss_die'); 
 			const idx = this.level.enemies.indexOf(this.endboss);
 			if (idx !== -1) {
 				this.level.enemies.splice(idx, 1);

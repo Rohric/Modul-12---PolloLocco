@@ -106,6 +106,7 @@ class Character extends MovableObject {
 	// Gibt dem Spieler eine Sprunggeschwindigkeit nach oben.
 	jump() {
 		this.speedY = 30;
+		   this.world?.audio?.playSound('pepe_jump')
 	}
 
 	// Prüft, ob der Charakter Gegner von oben trifft und löst den Schlag aus.
