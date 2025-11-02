@@ -146,7 +146,7 @@ canvas {
 	flex-wrap: wrap;
 	gap: 20px;
 	padding: 16px 22px;
-	background: rgba(255, 244, 214, 0.14);
+	background: rgba(255, 244, 214, 0.322);
 	border: 2px solid rgba(255, 158, 0, 0.75);
 	border-radius: 18px;
 	color: #0a0a0a;
@@ -168,7 +168,7 @@ canvas {
 }
 
 .overlay_game_text p {
-	font-size: 20px;
+	font-size: 24px;
 	font-weight: 500;
 	line-height: 1.35;
 	color: #060606;
