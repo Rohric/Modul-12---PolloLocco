@@ -73,7 +73,7 @@
 		<section class="background">
 			<h1>El Pollo Loco</h1>
 
-			<button
+			<!-- <button
 				id="audioToggleBtn"
 				class="audio_toggle"
 				type="button"
@@ -82,6 +82,11 @@
 				onclick="toggleAudio(this)">
 				<span id="audioLabelOn" class="d_none">Audio on</span>
 				<span id="audioLabelOff">Audio off</span>
+			</button> -->
+
+			<button class="audio_toggle" type="button">
+				<span data-audio-state="on">Sound an</span>
+				<span data-audio-state="off" class="d_none">Sound aus</span>
 			</button>
 
 			<canvas class="d_none" id="canvas" width="720" height="480"> </canvas>

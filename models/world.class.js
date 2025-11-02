@@ -155,7 +155,7 @@ class World {
 	spawnEnemyLoot(enemy) {
 		const drop = Math.random() < 0.5 ? new Collectable_Coin() : new Collectable_Bottle();
 		drop.x = enemy.x;
-		drop.y = enemy.y + enemy.height - drop.height; // auf Boden absetzen
+		drop.y = enemy.y + enemy.height - drop.height; 
 		drop.collected = false;
 		if (drop instanceof Collectable_Coin) {
 			this.level.collectableCoin.push(drop);
@@ -212,6 +212,8 @@ class World {
 				this.endboss.startEntrance(stopX);
 				this.slideEndbossBar();
 				this.startBossAttackLoop();
+		this.audio?.playSound('background_wildwest');
+
 			}
 		}
 
