@@ -81,7 +81,7 @@
 				onkeydown="event.preventDefault();"
 				onclick="toggleAudio(this)">
 				<span id="audioLabelOn" class="d_none">Audio on</span>
-				<span id="audioLabelOff" >Audio off</span>
+				<span id="audioLabelOff">Audio off</span>
 			</button>
 
 			<canvas class="d_none" id="canvas" width="720" height="480"> </canvas>
@@ -96,11 +96,21 @@
 			</article>
 
 			<article id="overlayGameScreenWON" class="overlay_game_screen_won d_none">
-				<button class="overlay_btn overlay_btn_reload" type="button" onclick="window.location.reload();">Reload</button>
+				<button
+					class="overlay_btn overlay_btn_reload"
+					type="button"
+					onclick="init(); document.getElementById('overlayGameScreen').classList.add('d_none'); document.getElementById('overlayGameScreenWON').classList.add('d_none'); document.getElementById('overlayGameScreenLOST').classList.add('d_none'); document.getElementById('canvas').classList.remove('d_none');">
+					Reload
+				</button>
 			</article>
 
 			<article id="overlayGameScreenLOST" class="overlay_game_screen_lost d_none">
-				<button class="overlay_btn overlay_btn_reload" type="button" onclick="window.location.reload();">Reload</button>
+				<button
+					class="overlay_btn overlay_btn_reload"
+					type="button"
+					onclick="init(); document.getElementById('overlayGameScreen').classList.add('d_none'); document.getElementById('overlayGameScreenWON').classList.add('d_none'); document.getElementById('overlayGameScreenLOST').classList.add('d_none'); document.getElementById('canvas').classList.remove('d_none');">
+					Reload
+				</button>
 			</article>
 
 			<article id="overlayGameText" class="overlay_game_text">
