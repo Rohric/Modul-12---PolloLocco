@@ -1,6 +1,7 @@
 class Character extends MovableObject {
 	height = 280;
-	y = 180;
+	y = 170;
+	groundLevel = 170;
 	speed = 10;
 
 	images_idle = [
@@ -77,12 +78,10 @@ class Character extends MovableObject {
 			if (movingRight) {
 				this.moveRight();
 				this.otherDirection = false;
-				// this.walking_sound.play()
 			}
 			if (movingLeft) {
 				this.moveLeft();
 				this.otherDirection = true;
-				// this.walking_sound.play()
 			}
 
 			if (this.world.keyboard.SPACE && !this.isAboveGround()) {
@@ -98,6 +97,7 @@ class Character extends MovableObject {
 			} else {
 				this.stopWalkingSound();
 			}
+			
 
 			this.world.camera_x = -this.x + 100;
 		}, 1000 / 60);
@@ -115,12 +115,12 @@ class Character extends MovableObject {
 					this.playAnimation(this.images_walking);
 				}
 			}
-		}, 60);
+		}, 120);
 	}
 
 	// Gibt dem Spieler eine Sprunggeschwindigkeit nach oben.
 	jump() {
-		this.speedY = 30;
+		this.speedY = 24;
 		this.world.audio.playSound('pepe_jump');
 	}
 
@@ -142,9 +142,9 @@ class Character extends MovableObject {
 
 	// Prüft, ob der Charakter Gegner von oben trifft und löst den Schlag aus.
 	smash(enemy) {
-		if (this.y + this.height - enemy.y < 20 && this.speedY < 0) {
+		if (this.y + this.height - enemy.y < 24 && this.speedY < 0) {
 			enemy.energy = 0 ;
-			this.speedY = 30;
+			this.speedY = 24;
 			return true;
 		}
 	}
