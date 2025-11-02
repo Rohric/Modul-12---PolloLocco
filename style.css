@@ -90,7 +90,7 @@ canvas {
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
-  padding: clamp(16px, 4.5vw, 24px);
+  padding: clamp(8px, 4.5vw, 4px);
   color: #1a1610;
   background-position: center bottom;
   background-size: contain;
@@ -163,7 +163,6 @@ button {
 }
 
 .overlay_btn {
-  display: none;
   padding: 12px 28px;
   border: 2px solid rgba(255, 158, 0, 0.8);
   border-radius: 16px;
