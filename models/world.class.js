@@ -237,7 +237,6 @@ class World {
 
 		if (this.endboss.mode === 'removed') {
 			this.audio?.playSound('endboss_die');
-			this.audio?.stopSound('background_drum');
 			this.audio?.stopSound('background_wildwest');
 			const idx = this.level.enemies.indexOf(this.endboss);
 			if (idx !== -1) {

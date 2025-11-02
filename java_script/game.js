@@ -1,7 +1,10 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let audioManager;
+let audioManager = new AudioManager();
+
+audioManager.muteAll(true);
+audioManager.playSound('background_drum');
 
 // Startet eine neue Spielwelt und setzt alle Laufzeiten zurück.
 function init() {
@@ -10,10 +13,25 @@ function init() {
 	}
 	keyboard = new Keyboard();
 	canvas = document.getElementById('canvas');
-	audioManager = new AudioManager();
 	level1 = createLevel();
 	world = new World(canvas, keyboard, audioManager);
+	updateAudioToggle(audioManager.isMuted);
 	console.log('Start El Pollo Locco');
+}
+
+function toggleAudio(button) {
+	button.blur();
+	const targetMuted = !audioManager.isMuted;
+	audioManager.muteAll(targetMuted);
+	updateAudioToggle(targetMuted);
+	if (!targetMuted) {
+		audioManager.playSound('background_drum');
+	}
+}
+
+function updateAudioToggle(isMuted) {
+	document.getElementById('audioLabelOn').classList.toggle('d_none', isMuted);
+	document.getElementById('audioLabelOff').classList.toggle('d_none', !isMuted);
 }
 
 // Reagiert auf Tastendrücke und steuert Spielfunktionen direkt.

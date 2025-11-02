@@ -50,45 +50,39 @@
 
 		<!-- Linke Seite: Bewegung -->
 		<div class="mobile_controls mobile_controls_left">
-			<button
-				class="mobile_btn"
-				type="button"
-				ontouchstart="keyboard.LEFT = true"
-				ontouchend="keyboard.LEFT = false">
+			<button class="mobile_btn" type="button" ontouchstart="keyboard.LEFT = true" ontouchend="keyboard.LEFT = false">
 				<img src="img/buttons/button_left_1.png" alt="Move left" />
 			</button>
 
-			<button
-				class="mobile_btn"
-				type="button"
-				ontouchstart="keyboard.RIGHT = true"
-				ontouchend="keyboard.RIGHT = false">
+			<button class="mobile_btn" type="button" ontouchstart="keyboard.RIGHT = true" ontouchend="keyboard.RIGHT = false">
 				<img src="img/buttons/button_right_1.png" alt="Move right" />
 			</button>
 		</div>
 
 		<!-- Rechte Seite: Aktionen -->
 		<div class="mobile_controls mobile_controls_right">
-			<button
-				class="mobile_btn"
-				type="button"
-
-				ontouchstart="keyboard.SPACE = true"
-				ontouchend="keyboard.SPACE = false">
+			<button class="mobile_btn" type="button" ontouchstart="keyboard.SPACE = true" ontouchend="keyboard.SPACE = false">
 				<img src="img/buttons/button_jump_1.png" alt="Jump" />
 			</button>
 
-			<button
-				class="mobile_btn"
-				type="button"
-				ontouchstart="keyboard.D = true"
-				ontouchend="keyboard.D = false">
+			<button class="mobile_btn" type="button" ontouchstart="keyboard.D = true" ontouchend="keyboard.D = false">
 				<img src="img/buttons/button_throw_1.png" alt="Throw bottle" />
 			</button>
 		</div>
 
 		<section class="background">
 			<h1>El Pollo Loco</h1>
+
+			<button
+				id="audioToggleBtn"
+				class="audio_toggle"
+				type="button"
+				tabindex="-1"
+				onkeydown="event.preventDefault();"
+				onclick="toggleAudio(this)">
+				<span id="audioLabelOn" class="d_none">Audio on</span>
+				<span id="audioLabelOff" >Audio off</span>
+			</button>
 
 			<canvas class="d_none" id="canvas" width="720" height="480"> </canvas>
 
