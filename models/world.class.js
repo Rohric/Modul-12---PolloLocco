@@ -27,6 +27,7 @@ class World {
 		this.canvas = canvas;
 		this.keyboard = keyboard || new Keyboard();
 		this.audio = audioManager || null;
+		this.audio?.playSound('background_drum');
 		this.endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
 		this.draw();
 		this.setWorld();
@@ -100,7 +101,7 @@ class World {
 
 			if (this.character.smash(enemy)) {
 				enemy.die();
-				this.audio?.playSound('chicken_death'); 
+				this.audio?.playSound('chicken_death');
 
 				setTimeout(() => {
 					const idx = this.level.enemies.indexOf(enemy);
@@ -117,6 +118,8 @@ class World {
 			if (this.character.energy == 0) {
 				document.getElementById('canvas').classList.add('d_none');
 				document.getElementById('overlayGameScreenLOST').classList.remove('d_none');
+				this.audio?.stopSound('background_drum');
+				this.audio?.stopSound('background_wildwest');
 			}
 
 			this.character.hit();
@@ -154,6 +157,8 @@ class World {
 
 		if (!this.bossTriggered && this.character.x > triggerX) {
 			this.bossTriggered = true;
+			// this.audio?.stopSound('background_drum');
+			this.audio?.playSound('background_wildwest');
 			if (this.endboss) {
 				this.endboss.startEntrance(stopX);
 				this.slideEndbossBar();
@@ -232,7 +237,9 @@ class World {
 		});
 
 		if (this.endboss.mode === 'removed') {
-			  this.audio?.playSound('endboss_die'); 
+			this.audio?.playSound('endboss_die');
+			this.audio?.stopSound('background_drum');
+			this.audio?.stopSound('background_wildwest');
 			const idx = this.level.enemies.indexOf(this.endboss);
 			if (idx !== -1) {
 				this.level.enemies.splice(idx, 1);
