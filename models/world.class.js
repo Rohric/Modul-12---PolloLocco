@@ -27,7 +27,6 @@ class World {
 		this.canvas = canvas;
 		this.keyboard = keyboard || new Keyboard();
 		this.audio = audioManager || null;
-		this.audio?.playSound('background_drum');
 		this.endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
 		this.draw();
 		this.setWorld();
@@ -118,7 +117,7 @@ class World {
 			if (this.character.energy == 0) {
 				document.getElementById('canvas').classList.add('d_none');
 				document.getElementById('overlayGameScreenLOST').classList.remove('d_none');
-				this.audio?.stopSound('background_drum');
+				// this.audio?.stopSound('background_drum');
 				this.audio?.stopSound('background_wildwest');
 			}
 
