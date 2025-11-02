@@ -259,6 +259,14 @@ class World {
 
 		this.addObjectsToMap(this.level.backgroundObjects);
 
+		this.addToMap(this.character);
+		this.addObjectsToMap(this.level.clouds);
+		this.addObjectsToMap(this.level.enemies);
+		this.addObjectsToMap(this.throwableObjects);
+		this.addObjectsToMap(this.level.collectableCoin.filter((coin) => !coin.collected));
+		this.addObjectsToMap(this.level.collectableBottle.filter((bottle) => !bottle.collected));
+
+		// HUD
 		this.ctx.translate(-this.camera_x, 0);
 		this.addToMap(this.statusBar);
 		this.ctx.translate(this.camera_x, 0);
@@ -274,13 +282,6 @@ class World {
 		this.ctx.translate(-this.camera_x, 0);
 		this.addToMap(this.statusBar_Endboss);
 		this.ctx.translate(this.camera_x, 0);
-
-		this.addToMap(this.character);
-		this.addObjectsToMap(this.level.enemies);
-		this.addObjectsToMap(this.level.clouds);
-		this.addObjectsToMap(this.throwableObjects);
-		this.addObjectsToMap(this.level.collectableCoin.filter((coin) => !coin.collected));
-		this.addObjectsToMap(this.level.collectableBottle.filter((bottle) => !bottle.collected));
 
 		this.ctx.translate(-this.camera_x, 0);
 

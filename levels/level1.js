@@ -1,5 +1,4 @@
-
-level1 = new Level
+level1 = new Level();
 // Erzeugt alle Gegner, Sammlerstücke und Hintergründe für Level 1.
 function createLevel() {
 	return new Level(
@@ -16,7 +15,18 @@ function createLevel() {
 			new Endboss(),
 		],
 
-		[new Cloud()],
+		[
+			new Cloud(),
+			new Cloud(),
+			new Cloud(),
+			new Cloud(),
+			new Cloud(),
+			new Cloud(),
+			new Cloud(),
+			new Cloud(),
+			new Cloud(),
+			new Cloud(),
+		],
 
 		[
 			new Collectable_Coin(),
