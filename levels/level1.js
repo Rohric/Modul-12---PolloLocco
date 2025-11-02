@@ -1,5 +1,8 @@
 level1 = new Level();
-// Erzeugt alle Gegner, Sammlerstücke und Hintergründe für Level 1.
+/**
+ * Creates the default Level 1 configuration with enemies and scenery.
+ * @returns {Level} Fully populated level instance.
+ */
 function createLevel() {
 	return new Level(
 		[

@@ -1,3 +1,6 @@
+/**
+ * Giant boss chicken with multi-phase attack behaviour.
+ */
 class Endboss extends MovableObject {
 	images_walking = [
 		'img/4_enemie_boss_chicken/1_walk/G1.png',
@@ -57,6 +60,9 @@ class Endboss extends MovableObject {
 	attackMovementInterval = null;
 	attackForwardOffset = 560;
 
+	/**
+	 * Loads all required sprites and starts the idle animation.
+	 */
 	constructor() {
 		super();
 		this.loadImages(this.images_walking);
@@ -71,6 +77,10 @@ class Endboss extends MovableObject {
 		this.animate();
 	}
 
+	/**
+	 * Chooses the correct sprite list for the current boss mode.
+	 * @returns {string[]} Array of frame paths.
+	 */
 	getCurrentImages() {
 		if (this.mode === 'walk') {
 			return this.images_walking;
@@ -87,6 +97,9 @@ class Endboss extends MovableObject {
 		return this.images_alert;
 	}
 
+	/**
+	 * Keeps animations in sync with the current boss state.
+	 */
 	animate() {
 		setInterval(() => {
 			const images = this.getCurrentImages();
@@ -127,6 +140,9 @@ class Endboss extends MovableObject {
 		}, 200);
 	}
 
+	/**
+	 * Updates the entrance animation until the boss reaches the arena.
+	 */
 	update() {
 		if (this.entering && this.x > this.targetX) {
 			this.moveLeft();
@@ -139,16 +155,27 @@ class Endboss extends MovableObject {
 		}
 	}
 
+	/**
+	 * Registers a callback that spawns minions during an attack.
+	 * @param {() => void} handler - Function to execute on spawn requests.
+	 */
 	setSpawnHandler(handler) {
 		this.spawnHandler = handler;
 	}
 
+	/**
+	 * Requests the current spawn handler to create additional enemies.
+	 */
 	requestSpawn() {
 		if (typeof this.spawnHandler === 'function') {
 			this.spawnHandler();
 		}
 	}
 
+	/**
+	 * Starts the entrance sequence towards the fighting position.
+	 * @param {number} targetPosition - X coordinate to reach.
+	 */
 	startEntrance(targetPosition) {
 		this.targetX = targetPosition;
 		this.baseX = targetPosition;
@@ -157,6 +184,9 @@ class Endboss extends MovableObject {
 		this.frameIndex = 0;
 	}
 
+	/**
+	 * Triggers the multi-step attack sequence (spawn, advance, spawn, retreat).
+	 */
 	startAttackSequence() {
 		if (this.attackActive || this.entering || this.mode === 'dead' || this.mode === 'removed') {
 			return;
@@ -173,6 +203,9 @@ class Endboss extends MovableObject {
 		this.requestSpawn();
 	}
 
+	/**
+	 * Moves the boss toward the player after the opening attack.
+	 */
 	startAdvancePhase() {
 		this.attackPhase = 'advance';
 		this.mode = 'walk';
@@ -187,6 +220,9 @@ class Endboss extends MovableObject {
 		});
 	}
 
+	/**
+	 * Returns the boss to the original position after the forward rush.
+	 */
 	startRetreatPhase() {
 		this.attackPhase = 'retreat';
 		this.mode = 'walk';
@@ -200,6 +236,11 @@ class Endboss extends MovableObject {
 		});
 	}
 
+	/**
+	 * Moves the boss toward a target and triggers a callback when the position is reached.
+	 * @param {number} targetX - Destination X coordinate.
+	 * @param {() => void} onComplete - Callback executed once the movement finishes.
+	 */
 	beginMovement(targetX, onComplete) {
 		this.clearAttackMovement();
 		const direction = targetX < this.x ? -1 : 1;
@@ -223,6 +264,9 @@ class Endboss extends MovableObject {
 		}, 1000 / 60);
 	}
 
+	/**
+	 * Cancels any running positional attack movement.
+	 */
 	clearAttackMovement() {
 		if (this.attackMovementInterval) {
 			clearInterval(this.attackMovementInterval);
@@ -230,6 +274,9 @@ class Endboss extends MovableObject {
 		}
 	}
 
+	/**
+	 * Interrupts attacks and shows the hurt animation.
+	 */
 	showHurt() {
 		if (this.mode === 'dead') {
 			return;
@@ -241,6 +288,9 @@ class Endboss extends MovableObject {
 		this.frameIndex = 0;
 	}
 
+	/**
+	 * Applies damage to the boss and triggers death handling if necessary.
+	 */
 	hit() {
 		this.energy -= 10;
 		if (this.energy <= 0) {
@@ -251,6 +301,9 @@ class Endboss extends MovableObject {
 		}
 	}
 
+	/**
+	 * Starts the death animation and marks the boss as removed afterwards.
+	 */
 	die() {
 		this.clearAttackMovement();
 		this.mode = 'dead';

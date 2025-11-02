@@ -1,10 +1,13 @@
+/**
+ * Player character "Pepe" with movement, animation and combat behaviour.
+ */
 class Character extends MovableObject {
 	height = 280;
 	y = 170;
 	groundLevel = 170;
 	speed = 10;
 
-	 offset = { top: 60, right: 32, bottom: 18, left: 32 };
+	offset = { top: 60, right: 32, bottom: 18, left: 32 };
 
 	images_idle = [
 		'img/2_character_pepe/1_idle/idle/I-1.png',
@@ -50,15 +53,14 @@ class Character extends MovableObject {
 		'img/2_character_pepe/5_dead/D-57.png',
 	];
 
-	images_hurt = [
-		'img/2_character_pepe/4_hurt/H-41.png',
-		'img/2_character_pepe/4_hurt/H-42.png',
-		'img/2_character_pepe/4_hurt/H-43.png',
-	];
+	images_hurt = ['img/2_character_pepe/4_hurt/H-41.png', 'img/2_character_pepe/4_hurt/H-42.png', 'img/2_character_pepe/4_hurt/H-43.png'];
+
 	world;
 	walkingSoundActive = false;
 
-	// Lädt alle Charakter-Sprites und startet Bewegung sowie Schwerkraft.
+	/**
+	 * Loads all sprite sheets and starts movement handling plus gravity.
+	 */
 	constructor() {
 		super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
 		this.loadImages(this.images_idle);
@@ -71,7 +73,9 @@ class Character extends MovableObject {
 		this.applyGravity();
 	}
 
-	// Verarbeitet Tastenbefehle, bewegt den Spieler und spielt passende Animationen.
+	/**
+	 * Handles user input, movement sounds and animation states.
+	 */
 	animate() {
 		setInterval(() => {
 			const movingRight = this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
@@ -99,7 +103,6 @@ class Character extends MovableObject {
 			} else {
 				this.stopWalkingSound();
 			}
-			
 
 			this.world.camera_x = -this.x + 100;
 		}, 1000 / 60);
@@ -112,20 +115,23 @@ class Character extends MovableObject {
 				this.playAnimation(this.images_hurt);
 			} else if (this.isAboveGround()) {
 				this.playAnimation(this.images_jumping);
-			} else {
-				if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-					this.playAnimation(this.images_walking);
-				}
+			} else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+				this.playAnimation(this.images_walking);
 			}
 		}, 120);
 	}
 
-	// Gibt dem Spieler eine Sprunggeschwindigkeit nach oben.
+	/**
+	 * Gives the player an upward impulse and plays the jump sound.
+	 */
 	jump() {
 		this.speedY = 24;
 		this.world.audio.playSound('pepe_jump');
 	}
 
+	/**
+	 * Starts the looping walking sound if it is not already active.
+	 */
 	startWalkingSound() {
 		if (this.walkingSoundActive) {
 			return;
@@ -134,6 +140,9 @@ class Character extends MovableObject {
 		this.walkingSoundActive = true;
 	}
 
+	/**
+	 * Stops the walking sound if it is currently playing.
+	 */
 	stopWalkingSound() {
 		if (!this.walkingSoundActive) {
 			return;
@@ -142,20 +151,22 @@ class Character extends MovableObject {
 		this.walkingSoundActive = false;
 	}
 
-	// Prüft, ob der Charakter Gegner von oben trifft und löst den Schlag aus.
-// models/movable_object/character.class.js
-smash(enemy) {
-    const playerBounds = this.boundsWithOffset();
-    const enemyBounds = enemy.boundsWithOffset();
+	/**
+	 * Determines whether the character hits an enemy from above.
+	 * @param {MovableObject} enemy - Target enemy instance.
+	 * @returns {boolean} True if the stomp defeated the enemy.
+	 */
+	smash(enemy) {
+		const playerBounds = this.boundsWithOffset();
+		const enemyBounds = enemy.boundsWithOffset();
 
-    const overlap = playerBounds.bottom - enemyBounds.top;
+		const overlap = playerBounds.bottom - enemyBounds.top;
 
-    if (overlap > 0 && overlap < 24 && this.speedY < 0) {
-        enemy.energy = 0;
-        this.speedY = 24;
-        return true;
-    }
-    return false;
-}
-
+		if (overlap > 0 && overlap < 24 && this.speedY < 0) {
+			enemy.energy = 0;
+			this.speedY = 24;
+			return true;
+		}
+		return false;
+	}
 }

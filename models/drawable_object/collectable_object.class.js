@@ -1,22 +1,34 @@
+/**
+ * Base class for coins, bottles and other collectible items.
+ */
 class CollectableObject extends DrawableObject {
 	width = 80;
 	height = 80;
 	y = 380;
 	collected = false;
 
-	// Setzt das Sammelobjekt zufällig in der Welt und lädt sein Bild.
+	/**
+	 * Places the item at a random location and loads its sprite.
+	 * @param {string} imagePath - Relative path to the collectible image.
+	 */
 	constructor(imagePath) {
 		super();
 		this.setRandomPosition();
 		this.loadImage(imagePath);
 	}
 
-	// Wählt eine neue zufällige X-Position innerhalb des Levels.
+	/**
+	 * Assigns a random X position within the level width.
+	 */
 	setRandomPosition() {
-		this.x = Math.random() * (719*3) + 120;
+		this.x = Math.random() * (719 * 3) + 120;
 	}
-	
-	// Prüft, ob der Spieler das Objekt berührt und markiert es als eingesammelt.
+
+	/**
+	 * Checks whether the character interacts with the item.
+	 * @param {Character} character - Player character.
+	 * @returns {boolean} True if the collectible was picked up.
+	 */
 	isCollect(character) {
 		if (this.collected) {
 			return false;

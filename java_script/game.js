@@ -6,7 +6,9 @@ let audioManager = new AudioManager();
 audioManager.muteAll(true);
 audioManager.playSound('background_drum');
 
-// Startet eine neue Spielwelt und setzt alle Laufzeiten zurück.
+/**
+ * Starts a new game world and resets all runtime state.
+ */
 function init() {
 	if (world) {
 		world.destroy();
@@ -19,6 +21,10 @@ function init() {
 	console.log('Start El Pollo Locco');
 }
 
+/**
+ * Toggles the mute state and updates the UI button labels.
+ * @param {HTMLButtonElement} button - Button that triggered the toggle.
+ */
 function toggleAudio(button) {
 	button.blur();
 	const targetMuted = !audioManager.isMuted;
@@ -29,15 +35,18 @@ function toggleAudio(button) {
 	}
 }
 
+/**
+ * Updates both audio labels to reflect the current mute state.
+ * @param {boolean} isMuted - True if audio is muted.
+ */
 function updateAudioToggle(isMuted) {
 	document.getElementById('audioLabelOn').classList.toggle('d_none', isMuted);
 	document.getElementById('audioLabelOff').classList.toggle('d_none', !isMuted);
 }
 
-// Reagiert auf Tastendrücke und steuert Spielfunktionen direkt.
+/** Handles keyboard presses and updates the current input state. */
 window.addEventListener('keydown', (event) => {
 	if (event.keyCode === 82) {
-		// R
 		window.location.reload();
 		return;
 	}
@@ -76,7 +85,7 @@ window.addEventListener('keydown', (event) => {
 	}
 });
 
-// Hebt gesetzte Tastensignale wieder auf, sobald die Taste losgelassen wird.
+/** Releases keyboard flags once the key is lifted. */
 window.addEventListener('keyup', (event) => {
 	if (event.keyCode == 32) {
 		keyboard.SPACE = false;
@@ -106,8 +115,9 @@ window.addEventListener('keyup', (event) => {
 		keyboard.P = false;
 	}
 });
+
 /* ===== Responsive Area ===== */
-// Blendet den Rotationshinweis ein, wenn das Gerät im Hochformat genutzt wird.
+/** Shows a rotate-warning overlay when the device is in portrait mode. */
 document.addEventListener('DOMContentLoaded', () => {
 	const warning = document.getElementById('orientationWarning');
 	const toggleOrientationWarning = () =>

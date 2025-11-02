@@ -1,9 +1,12 @@
+/**
+ * Simple keyboard state container used by the world and character.
+ */
 class Keyboard {
-  LEFT = false;
-  RIGHT = false;
-  UP = false;
-  DOWN = false;
-  SPACE = false;
-  D = false;
-  P = false;
+	LEFT = false;
+	RIGHT = false;
+	UP = false;
+	DOWN = false;
+	SPACE = false;
+	D = false;
+	P = false;
 }

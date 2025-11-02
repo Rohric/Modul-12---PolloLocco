@@ -1,5 +1,10 @@
+/**
+ * Health bar for the endboss that slides into view during the encounter.
+ */
 class StatusBar_Endboss extends StatusBar {
-	// Definiert den Endboss-Lebensbalken, der später ins Bild gleitet.
+	/**
+	 * Creates the orange endboss bar starting off-screen.
+	 */
 	constructor() {
 		super({
 			images: [
@@ -15,6 +20,4 @@ class StatusBar_Endboss extends StatusBar {
 			percentage: 100,
 		});
 	}
-  
-
 }

@@ -1,5 +1,13 @@
+/**
+ * Throwable salsa bottle that arcs forward and damages enemies.
+ */
 class ThrowablaObject extends MovableObject {
-	// Erstellt eine neue Flasche an einer Startposition und merkt sich die Flugrichtung.
+	/**
+	 * Creates a new bottle at the given location and starts its flight.
+	 * @param {number} x - Initial x coordinate.
+	 * @param {number} y - Initial y coordinate.
+	 * @param {number} direction - Horizontal direction (1 or -1).
+	 */
 	constructor(x, y, direction) {
 		super().loadImage('img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
 		this.x = x;
@@ -10,7 +18,9 @@ class ThrowablaObject extends MovableObject {
 		this.throw();
 	}
 
-	// Lässt die Flasche nach vorn fliegen und simuliert dabei die Schwerkraft.
+	/**
+	 * Applies an initial impulse and moves the bottle horizontally.
+	 */
 	throw() {
 		this.speedY = 30;
 		this.applyGravity();

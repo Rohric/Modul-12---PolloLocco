@@ -1,3 +1,6 @@
+/**
+ * Basic chicken enemy that patrols the level and can be stomped.
+ */
 class Chicken extends MovableObject {
 	y = 370;
 	height = 60;
@@ -15,7 +18,9 @@ class Chicken extends MovableObject {
 
 	images_dead = ['img/3_enemies_chicken/chicken_normal/2_dead/dead.png'];
 
-	// Legt Startbild, Position und Geschwindigkeit des Huhns fest.
+	/**
+	 * Sets the sprite, randomises start position and kicks off animation.
+	 */
 	constructor() {
 		super().loadImage('img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
 
@@ -31,7 +36,9 @@ class Chicken extends MovableObject {
 		}
 	}
 
-	// Bewegt das Huhn nach links und spielt die Laufanimation.
+	/**
+	 * Moves the chicken left and animates the walk cycle.
+	 */
 	animate() {
 		setInterval(() => {
 			if (this.dead) {
@@ -48,7 +55,9 @@ class Chicken extends MovableObject {
 		}, 200);
 	}
 
-	// Schaltet das Huhn in den Todeszustand und stoppt die Bewegung.
+	/**
+	 * Plays the death frame and freezes the chicken in place.
+	 */
 	die() {
 		this.dead = true;
 		this.loadImage(this.images_dead[0]);

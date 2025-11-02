@@ -1,3 +1,6 @@
+/**
+ * Coordinates the main game world including rendering, collisions and audio.
+ */
 class World {
 	character = new Character();
 	level = level1;
@@ -21,7 +24,12 @@ class World {
 
 	audio = null;
 
-	// Erzeugt die Spielwelt, verbindet sie mit dem Canvas und startet die Hauptschleifen.
+	/**
+	 * Creates the world, wires the canvas/context and starts all loops.
+	 * @param {HTMLCanvasElement} canvas - Target canvas element.
+	 * @param {Keyboard} keyboard - Keyboard input handler.
+	 * @param {AudioManager} audioManager - Shared audio manager instance.
+	 */
 	constructor(canvas, keyboard, audioManager) {
 		this.ctx = canvas.getContext('2d');
 		this.canvas = canvas;
@@ -37,11 +45,16 @@ class World {
 		this.run();
 	}
 
+	/**
+	 * Gives the character access to the world instance.
+	 */
 	setWorld() {
 		this.character.world = this;
 	}
 
-	// Startet die zyklischen Prüfungen für Kollisionen und sammelbare Objekte.
+	/**
+	 * Starts the core intervals that handle collisions and collectibles.
+	 */
 	run() {
 		this.collisionInterval = setInterval(() => {
 			this.checkCollisions();
@@ -54,7 +67,9 @@ class World {
 		}, 200);
 	}
 
-	// Stoppt alle laufenden Intervalle sowie die Zeichenschleife.
+	/**
+	 * Stops all active loops and the rendering cycle.
+	 */
 	destroy() {
 		if (this.collisionInterval) {
 			clearInterval(this.collisionInterval);
@@ -74,7 +89,9 @@ class World {
 		}
 	}
 
-	// Lässt bei Tastendruck neue Flaschen entstehen und verwaltet den Vorrat.
+	/**
+	 * Spawns throwable bottles when the player presses the throw key.
+	 */
 	checkThrowObjects() {
 		if (this.keyboard.D && this.statusBar_Bottle.percentage > 0) {
 			const direction = this.character.otherDirection ? -1 : 1;
@@ -91,7 +108,9 @@ class World {
 		}
 	}
 
-	// Prüft Berührungen zwischen Spieler und Gegnern und reagiert entsprechend.
+	/**
+	 * Resolves collisions between the character and enemies.
+	 */
 	checkCollisions() {
 		this.level.enemies.forEach((enemy) => {
 			if (!this.character.isColliding(enemy)) {
@@ -121,7 +140,6 @@ class World {
 			if (this.character.energy == 0) {
 				document.getElementById('canvas').classList.add('d_none');
 				document.getElementById('overlayGameScreenLOST').classList.remove('d_none');
-				// this.audio?.stopSound('background_drum');
 				this.audio?.stopSound('background_wildwest');
 			}
 
@@ -130,15 +148,13 @@ class World {
 		});
 	}
 
-	// Hebt Münzen und Flaschen ins Inventar, sobald der Spieler sie berührt.
+	/**
+	 * Picks up coins and bottles as soon as the character touches them.
+	 */
 	checkCollectables() {
 		this.level.collectableCoin.forEach((coin) => {
 			if (coin.isCollect(this.character)) {
-				let coinBar_Percent = this.statusBar_Coin.percentage + 10;
-				if (coinBar_Percent > 100) {
-					coinBar_Percent = 100;
-				}
-				this.statusBar_Coin.setPercentage(coinBar_Percent);
+				this.statusBar_Coin.setPercentage(this.statusBar_Coin.percentage + 20);
 			}
 		});
 
@@ -153,15 +169,15 @@ class World {
 		});
 	}
 
-	// Startet den Bosskampf, sobald der Spieler weit genug gelaufen ist.
+	/**
+	 * Checks whether the boss fight should be triggered and manages the attack loop.
+	 */
 	checkBossEntrance() {
 		let triggerX = 2100;
 		let stopX = 719 * 3 + 200;
 
 		if (!this.bossTriggered && this.character.x > triggerX) {
 			this.bossTriggered = true;
-			// this.audio?.stopSound('background_drum');
-			this.audio?.playSound('background_wildwest');
 			if (this.endboss) {
 				this.endboss.startEntrance(stopX);
 				this.slideEndbossBar();
@@ -174,7 +190,9 @@ class World {
 		}
 	}
 
-	// Lässt den Endboss regelmäßig besondere Angriffe vorbereiten.
+	/**
+	 * Starts the periodic boss attack check loop.
+	 */
 	startBossAttackLoop() {
 		if (this.bossAttackInterval || !this.endboss) {
 			return;
@@ -187,7 +205,9 @@ class World {
 		}, 5000);
 	}
 
-	// Schiebt die Anzeige des Endboss-Lebensbalkens zur sichtbaren Position.
+	/**
+	 * Slides the endboss status bar into the HUD view.
+	 */
 	slideEndbossBar() {
 		const targetX = 10;
 		let speed = 6;
@@ -205,7 +225,9 @@ class World {
 		requestAnimationFrame(move);
 	}
 
-	// Spawnt angreifende Hühner in Bossphasen.
+	/**
+	 * Spawns attacking chickens during boss phases.
+	 */
 	spawnAttackChickens() {
 		for (let i = 0; i < 5; i++) {
 			const chicken = new Chicken();
@@ -214,7 +236,9 @@ class World {
 		}
 	}
 
-	// Verarbeitet Treffer durch geworfene Flaschen und beendet den Bosskampf.
+	/**
+	 * Handles collisions between thrown bottles and the endboss.
+	 */
 	checkThrowableHits() {
 		if (!this.endboss) {
 			this.throwableObjects = this.throwableObjects.filter(
@@ -250,15 +274,15 @@ class World {
 		}
 	}
 
-	// Zeichnet alle Spielobjekte und wiederholt die Animation per requestAnimationFrame.
+	/**
+	 * Draws every game object and schedules the next frame.
+	 */
 	draw() {
 		this.checkBossEntrance();
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
 		this.ctx.translate(this.camera_x, 0);
-
 		this.addObjectsToMap(this.level.backgroundObjects);
-
 		this.addToMap(this.character);
 		this.addObjectsToMap(this.level.clouds);
 		this.addObjectsToMap(this.level.enemies);
@@ -266,7 +290,6 @@ class World {
 		this.addObjectsToMap(this.level.collectableCoin.filter((coin) => !coin.collected));
 		this.addObjectsToMap(this.level.collectableBottle.filter((bottle) => !bottle.collected));
 
-		// HUD
 		this.ctx.translate(-this.camera_x, 0);
 		this.addToMap(this.statusBar);
 		this.ctx.translate(this.camera_x, 0);
@@ -288,20 +311,25 @@ class World {
 		this.animationId = requestAnimationFrame(() => this.draw());
 	}
 
-	// Fügt eine Liste von Objekten nacheinander zur Zeichenfläche hinzu.
+	/**
+	 * Adds a list of objects to the canvas in order.
+	 * @param {DrawableObject[]} objects - Objects to render.
+	 */
 	addObjectsToMap(objects) {
 		objects.forEach((object) => {
 			this.addToMap(object);
 		});
 	}
 
-	// Platziert ein einzelnes Objekt unter Berücksichtigung seiner Blickrichtung.
+	/**
+	 * Renders a single object, taking its facing direction into account.
+	 * @param {MovableObject|DrawableObject} MovableObject - Object to render.
+	 */
 	addToMap(MovableObject) {
 		if (MovableObject.otherDirection) {
 			this.flipImage(MovableObject);
 		}
 		MovableObject.draw(this.ctx);
-		// Rotes quadrat fOr die kollisionsrechnung
 		// MovableObject.drawFrame(this.ctx);
 
 		if (MovableObject.otherDirection) {
@@ -309,7 +337,10 @@ class World {
 		}
 	}
 
-	// Spiegelt ein Bild horizontal, damit Figuren nach links schauen können.
+	/**
+	 * Mirrors an object's image horizontally.
+	 * @param {MovableObject|DrawableObject} MovableObject - Object to flip.
+	 */
 	flipImage(MovableObject) {
 		this.ctx.save();
 		this.ctx.translate(MovableObject.width, 0);
@@ -317,7 +348,10 @@ class World {
 		MovableObject.x = MovableObject.x * -1;
 	}
 
-	// Hebt die vorherige Spiegelung wieder auf.
+	/**
+	 * Restores the previously mirrored image.
+	 * @param {MovableObject|DrawableObject} MovableObject - Object to restore.
+	 */
 	flipImageBack(MovableObject) {
 		MovableObject.x = MovableObject.x * -1;
 		this.ctx.restore();
