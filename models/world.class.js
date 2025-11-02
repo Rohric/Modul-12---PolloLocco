@@ -302,7 +302,7 @@ class World {
 		}
 		MovableObject.draw(this.ctx);
 		// Rotes quadrat fOr die kollisionsrechnung
-		MovableObject.drawFrame(this.ctx);
+		// MovableObject.drawFrame(this.ctx);
 
 		if (MovableObject.otherDirection) {
 			this.flipImageBack(MovableObject);

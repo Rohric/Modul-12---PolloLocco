@@ -36,14 +36,22 @@ isAboveGround() {
 
 
 	// Ermittelt, ob zwei Objekte sich überlappen.
-	isColliding(MovableObject) {
-		return (
-			this.x + this.width > MovableObject.x &&
-			this.y + this.height > MovableObject.y &&
-			this.x < MovableObject.x &&
-			this.y < MovableObject.y + MovableObject.height
-		);
-	}
+boundsWithOffset() {
+    const { top, right, bottom, left } = this.offset;
+    return {
+        left: this.x + left,
+        right: this.x + this.width - right,
+        top: this.y + top,
+        bottom: this.y + this.height - bottom,
+    };
+}
+
+isColliding(other) {
+    const a = this.boundsWithOffset();
+    const b = other.boundsWithOffset();
+    return a.right > b.left && a.left < b.right && a.bottom > b.top && a.top < b.bottom;
+}
+
 
 	// Reduziert die Energie und speichert den Zeitpunkt eines Treffers.
 	hit() {

@@ -4,6 +4,8 @@ class Character extends MovableObject {
 	groundLevel = 170;
 	speed = 10;
 
+	 offset = { top: 60, right: 32, bottom: 18, left: 32 };
+
 	images_idle = [
 		'img/2_character_pepe/1_idle/idle/I-1.png',
 		'img/2_character_pepe/1_idle/idle/I-2.png',
@@ -141,11 +143,19 @@ class Character extends MovableObject {
 	}
 
 	// Prüft, ob der Charakter Gegner von oben trifft und löst den Schlag aus.
-	smash(enemy) {
-		if (this.y + this.height - enemy.y < 24 && this.speedY < 0) {
-			enemy.energy = 0 ;
-			this.speedY = 24;
-			return true;
-		}
-	}
+// models/movable_object/character.class.js
+smash(enemy) {
+    const playerBounds = this.boundsWithOffset();
+    const enemyBounds = enemy.boundsWithOffset();
+
+    const overlap = playerBounds.bottom - enemyBounds.top;
+
+    if (overlap > 0 && overlap < 24 && this.speedY < 0) {
+        enemy.energy = 0;
+        this.speedY = 24;
+        return true;
+    }
+    return false;
+}
+
 }

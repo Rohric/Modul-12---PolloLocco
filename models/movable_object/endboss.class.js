@@ -49,6 +49,8 @@ class Endboss extends MovableObject {
 	width = 200;
 	y = 80;
 
+	offset = { top: 80, right: 40, bottom: 40, left: 40 };
+
 	spawnHandler = null;
 	baseX = null;
 	attackPhase = null;
