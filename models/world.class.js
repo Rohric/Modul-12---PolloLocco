@@ -28,6 +28,10 @@ class World {
 		this.keyboard = keyboard || new Keyboard();
 		this.audio = audioManager || null;
 		this.endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
+		if (this.endboss) {
+			this.endboss.setSpawnHandler(() => this.spawnAttackChickens());
+		}
+
 		this.draw();
 		this.setWorld();
 		this.run();
@@ -179,9 +183,7 @@ class World {
 			if (!this.endboss || this.endboss.entering || this.endboss.mode === 'dead') {
 				return;
 			}
-			if (this.endboss.startAttack()) {
-				this.spawnAttackChickens();
-			}
+			this.endboss.startAttackSequence();
 		}, 5000);
 	}
 
