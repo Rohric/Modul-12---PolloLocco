@@ -2,8 +2,8 @@
  * Basic chicken enemy that patrols the level and can be stomped.
  */
 class Chicken extends MovableObject {
-	y = 370;
-	height = 60;
+	y = 340;
+	height = 100;
 	width = 80;
 	energy = 10;
 	dead = false;

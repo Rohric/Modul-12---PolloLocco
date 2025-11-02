@@ -64,88 +64,118 @@ class World {
 		this.collectableInterval = setInterval(() => {
 			this.checkCollectables();
 			this.checkThrowObjects();
-		}, 200);
+		}, 100);
+	}
+
+	/**
+	 * Clears an interval/timeout stored as property and nulls it.
+	 * @param {'collisionInterval'|'collectableInterval'|'bossAttackInterval'} refName
+	 * @param {Function} clearer
+	 */
+	clearTimer(refName, clearer = clearInterval) {
+		const handle = this[refName];
+		if (!handle) {
+			return;
+		}
+		clearer(handle);
+		this[refName] = null;
+	}
+
+	/**
+	 * Cancels the active animation frame request if present.
+	 */
+	cancelAnimation() {
+		if (!this.animationId) {
+			return;
+		}
+		cancelAnimationFrame(this.animationId);
+		this.animationId = null;
 	}
 
 	/**
 	 * Stops all active loops and the rendering cycle.
 	 */
 	destroy() {
-		if (this.collisionInterval) {
-			clearInterval(this.collisionInterval);
-			this.collisionInterval = null;
-		}
-		if (this.collectableInterval) {
-			clearInterval(this.collectableInterval);
-			this.collectableInterval = null;
-		}
-		if (this.bossAttackInterval) {
-			clearInterval(this.bossAttackInterval);
-			this.bossAttackInterval = null;
-		}
-		if (this.animationId) {
-			cancelAnimationFrame(this.animationId);
-			this.animationId = null;
-		}
+		this.clearTimer('collisionInterval');
+		this.clearTimer('collectableInterval');
+		this.clearTimer('bossAttackInterval');
+		this.cancelAnimation();
 	}
 
 	/**
 	 * Spawns throwable bottles when the player presses the throw key.
 	 */
 	checkThrowObjects() {
-		if (this.keyboard.D && this.statusBar_Bottle.percentage > 0) {
-			const direction = this.character.otherDirection ? -1 : 1;
-			const offsetX = this.character.x + (direction === 1 ? 100 : -60);
-			const offsetY = this.character.y + 100;
-			let bottle = new ThrowablaObject(offsetX, offsetY, direction);
-			this.throwableObjects.push(bottle);
-
-			let percent = this.statusBar_Bottle.percentage - 10;
-			if (percent < 0) {
-				percent = 0;
-			}
-			this.statusBar_Bottle.setPercentage(percent);
+		if (!this.keyboard.D || this.statusBar_Bottle.percentage <= 0) {
+			return;
 		}
+		const direction = this.character.otherDirection ? -1 : 1;
+		const offsetX = this.character.x + (direction === 1 ? 100 : -60);
+		const offsetY = this.character.y + 100;
+		const bottle = new ThrowablaObject(offsetX, offsetY, direction);
+		this.throwableObjects.push(bottle);
+		const percent = Math.max(0, this.statusBar_Bottle.percentage - 10);
+		this.statusBar_Bottle.setPercentage(percent);
 	}
 
 	/**
 	 * Resolves collisions between the character and enemies.
 	 */
 	checkCollisions() {
-		this.level.enemies.forEach((enemy) => {
-			if (!this.character.isColliding(enemy)) {
-				return;
+		this.level.enemies.forEach((enemy) => this.handleEnemyCollision(enemy));
+	}
+
+	handleEnemyCollision(enemy) {
+		if (!this.character.isColliding(enemy) || enemy.dead) {
+			return;
+		}
+		if (this.handleEnemySmash(enemy) || this.character.isHurt()) {
+			return;
+		}
+		this.handleHeroHit();
+	}
+
+	handleEnemySmash(enemy) {
+		if (!this.character.smash(enemy)) {
+			return false;
+		}
+		enemy.die();
+		this.spawnEnemyLoot(enemy);
+
+		this.audio?.playSound('chicken_death');
+		setTimeout(() => {
+			const idx = this.level.enemies.indexOf(enemy);
+			if (idx !== -1) {
+				this.level.enemies.splice(idx, 1);
 			}
+		}, 700);
+		return true;
+	}
 
-			if (enemy.dead) {
-				return;
-			}
+	spawnEnemyLoot(enemy) {
+		const drop = Math.random() < 0.5 ? new Collectable_Coin() : new Collectable_Bottle();
+		drop.x = enemy.x;
+		drop.y = enemy.y + enemy.height - drop.height; // auf Boden absetzen
+		drop.collected = false;
+		if (drop instanceof Collectable_Coin) {
+			this.level.collectableCoin.push(drop);
+		} else {
+			this.level.collectableBottle.push(drop);
+		}
+	}
 
-			if (this.character.smash(enemy)) {
-				enemy.die();
-				this.audio?.playSound('chicken_death');
+	handleHeroHit() {
+		if (this.character.energy === 0) {
+			this.handleGameOver();
+		}
+		this.character.hit();
+		this.statusBar.setPercentage(this.character.energy);
+	}
 
-				setTimeout(() => {
-					const idx = this.level.enemies.indexOf(enemy);
-
-					this.level.enemies.splice(idx, 1);
-				}, 700);
-				return;
-			}
-
-			if (this.character.isHurt()) {
-				return;
-			}
-
-			if (this.character.energy == 0) {
-				document.getElementById('canvas').classList.add('d_none');
-				document.getElementById('overlayGameScreenLOST').classList.remove('d_none');
-				this.audio?.stopSound('background_wildwest');
-			}
-
-			this.character.hit();
-			this.statusBar.setPercentage(this.character.energy);
-		});
+	handleGameOver() {
+		document.getElementById('canvas').classList.add('d_none');
+		document.getElementById('overlayGameScreenLOST').classList.remove('d_none');
+		this.audio?.stopSound('background_wildwest');
 	}
 
 	/**
