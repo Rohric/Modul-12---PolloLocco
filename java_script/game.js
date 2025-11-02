@@ -5,7 +5,6 @@ const audioManager = new AudioManager();
 
 let muteButtons = [];
 
-
 /**
  * Starts a new game world and resets all runtime state.
  */
@@ -19,10 +18,14 @@ function init() {
 	world = new World(canvas, keyboard, audioManager);
 	syncMuteButtons();
 	if (!audioManager.isMuted) {
+		audioManager.playSound('background_drum');
 	}
 	console.log('Start El Pollo Locco');
 }
 
+/**
+ * Arms a one-time listener that resumes background music after user interaction.
+ */
 function setupAutoplayFallback() {
 	const resumeAudio = () => {
 		if (!audioManager.isMuted) {
@@ -99,7 +102,10 @@ function setupOrientationWarning() {
 	toggleOrientationWarning();
 }
 
-/** Handles keyboard presses and updates the current input state. */
+/**
+ * Handles keyboard presses and updates the current input state.
+ * @param {KeyboardEvent} event - Triggered keydown event.
+ */
 window.addEventListener('keydown', (event) => {
 	if (event.keyCode === 82) {
 		window.location.reload();
@@ -133,7 +139,10 @@ window.addEventListener('keydown', (event) => {
 	}
 });
 
-/** Releases keyboard flags once the key is lifted. */
+/**
+ * Releases keyboard flags once the key is lifted.
+ * @param {KeyboardEvent} event - Triggered keyup event.
+ */
 window.addEventListener('keyup', (event) => {
 	if (event.keyCode == 32) {
 		keyboard.SPACE = false;
@@ -158,6 +167,9 @@ window.addEventListener('keyup', (event) => {
 	}
 });
 
+/**
+ * Restores UI bindings and autoplay fallback once the DOM is ready.
+ */
 document.addEventListener('DOMContentLoaded', () => {
 	setupMuteControls();
 	setupOrientationWarning();

@@ -125,6 +125,10 @@ class World {
 		this.level.enemies.forEach((enemy) => this.handleEnemyCollision(enemy));
 	}
 
+	/**
+	 * Handles collision logic for a single enemy instance.
+	 * @param {MovableObject} enemy - Enemy currently intersecting the character.
+	 */
 	handleEnemyCollision(enemy) {
 		if (!this.character.isColliding(enemy) || enemy.dead) {
 			return;
@@ -135,6 +139,11 @@ class World {
 		this.handleHeroHit();
 	}
 
+	/**
+	 * Resolves a stomp kill and removes the enemy when successful.
+	 * @param {MovableObject} enemy - Enemy to evaluate.
+	 * @returns {boolean} True when the enemy was smashed.
+	 */
 	handleEnemySmash(enemy) {
 		if (!this.character.smash(enemy)) {
 			return false;
@@ -152,10 +161,14 @@ class World {
 		return true;
 	}
 
+	/**
+	 * Spawns a coin or bottle collectible at the defeated enemy's position.
+	 * @param {MovableObject} enemy - Enemy that dropped the loot.
+	 */
 	spawnEnemyLoot(enemy) {
 		const drop = Math.random() < 0.5 ? new Collectable_Coin() : new Collectable_Bottle();
 		drop.x = enemy.x;
-		drop.y = enemy.y + enemy.height - drop.height; 
+		drop.y = enemy.y + enemy.height - drop.height;
 		drop.collected = false;
 		if (drop instanceof Collectable_Coin) {
 			this.level.collectableCoin.push(drop);
@@ -164,6 +177,9 @@ class World {
 		}
 	}
 
+	/**
+	 * Applies damage handling when the character is hit by an enemy.
+	 */
 	handleHeroHit() {
 		if (this.character.energy === 0) {
 			this.handleGameOver();
@@ -172,6 +188,9 @@ class World {
 		this.statusBar.setPercentage(this.character.energy);
 	}
 
+	/**
+	 * Switches the UI/state when the player runs out of energy.
+	 */
 	handleGameOver() {
 		document.getElementById('canvas').classList.add('d_none');
 		document.getElementById('overlayGameScreenLOST').classList.remove('d_none');
@@ -362,7 +381,6 @@ class World {
 			this.flipImage(MovableObject);
 		}
 		MovableObject.draw(this.ctx);
-		// MovableObject.drawFrame(this.ctx);
 
 		if (MovableObject.otherDirection) {
 			this.flipImageBack(MovableObject);
