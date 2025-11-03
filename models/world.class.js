@@ -13,7 +13,11 @@ class World {
 	statusBar_Bottle = new StatusBar_Bottle();
 	statusBar_Coin = new StatusBar_Coin();
 	statusBar_Endboss = new StatusBar_Endboss();
+
 	throwableObjects = [];
+	lastThrow = 0;
+	throwCooldown = 500;
+
 	collisionInterval = null;
 	collectableInterval = null;
 	animationId = null;
@@ -102,21 +106,69 @@ class World {
 		this.cancelAnimation();
 	}
 
-	/**
-	 * Spawns throwable bottles when the player presses the throw key.
-	 */
-	checkThrowObjects() {
-		if (!this.keyboard.D || this.statusBar_Bottle.percentage <= 0) {
-			return;
-		}
-		const direction = this.character.otherDirection ? -1 : 1;
-		const offsetX = this.character.x + (direction === 1 ? 100 : -60);
-		const offsetY = this.character.y + 100;
-		const bottle = new ThrowablaObject(offsetX, offsetY, direction);
-		this.throwableObjects.push(bottle);
-		const percent = Math.max(0, this.statusBar_Bottle.percentage - 10);
-		this.statusBar_Bottle.setPercentage(percent);
-	}
+/**
+ * Spawns throwable bottles when the player presses the throw key
+ * and the cooldown has elapsed.
+ */
+checkThrowObjects() {
+  if (!this.canAttemptThrow()) {
+    return;
+  }
+
+  const now = Date.now();
+  if (this.isThrowOnCooldown(now)) {
+    return;
+  }
+
+  this.registerThrow(now);
+  this.spawnBottle();
+  this.consumeBottleCharge();
+}
+
+/**
+ * Determines whether the player currently satisfies every
+ * prerequisite for throwing a bottle.
+ * @returns {boolean} True if a throw may be attempted.
+ */
+canAttemptThrow() {
+  return this.keyboard.D && this.statusBar_Bottle.percentage > 0;
+}
+
+/**
+ * Verifies the cooldown timer for bottle throws.
+ * @param {number} timestamp - Current timestamp in milliseconds.
+ * @returns {boolean} True if the cooldown is still active.
+ */
+isThrowOnCooldown(timestamp) {
+  return timestamp - this.lastThrow < this.throwCooldown;
+}
+
+/**
+ * Updates the internal state to remember when the last throw occurred.
+ * @param {number} timestamp - Timestamp in milliseconds.
+ */
+registerThrow(timestamp) {
+  this.lastThrow = timestamp;
+}
+
+/**
+ * Creates a new throwable bottle and adds it to the active projectiles.
+ */
+spawnBottle() {
+  const direction = this.character.otherDirection ? -1 : 1;
+  const offsetX = this.character.x + (direction === 1 ? 100 : -60);
+  const offsetY = this.character.y + 100;
+  const bottle = new ThrowablaObject(offsetX, offsetY, direction);
+  this.throwableObjects.push(bottle);
+}
+
+/**
+ * Reduces the bottle status bar after a throw.
+ */
+consumeBottleCharge() {
+  const nextValue = Math.max(0, this.statusBar_Bottle.percentage - 10);
+  this.statusBar_Bottle.setPercentage(nextValue);
+}
 
 	/**
 	 * Resolves collisions between the character and enemies.
@@ -231,8 +283,7 @@ class World {
 				this.endboss.startEntrance(stopX);
 				this.slideEndbossBar();
 				this.startBossAttackLoop();
-		this.audio?.playSound('background_wildwest');
-
+				this.audio?.playSound('background_wildwest');
 			}
 		}
 
