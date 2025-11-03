@@ -53,7 +53,11 @@ class Character extends MovableObject {
 		'img/2_character_pepe/5_dead/D-57.png',
 	];
 
-	images_hurt = ['img/2_character_pepe/4_hurt/H-41.png', 'img/2_character_pepe/4_hurt/H-42.png', 'img/2_character_pepe/4_hurt/H-43.png'];
+	images_hurt = [
+		'img/2_character_pepe/4_hurt/H-41.png',
+		'img/2_character_pepe/4_hurt/H-42.png',
+		'img/2_character_pepe/4_hurt/H-43.png',
+	];
 
 	world;
 	walkingSoundActive = false;
@@ -71,6 +75,7 @@ class Character extends MovableObject {
 
 		this.animate();
 		this.applyGravity();
+		this.x = -100
 	}
 
 	/**
