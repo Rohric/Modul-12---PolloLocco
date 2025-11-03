@@ -9,6 +9,19 @@ class Character extends MovableObject {
 
 	offset = { top: 60, right: 32, bottom: 18, left: 32 };
 
+	images_sleep = [
+		'img/2_character_pepe/1_idle/long_idle/I-11.png',
+		'img/2_character_pepe/1_idle/long_idle/I-12.png',
+		'img/2_character_pepe/1_idle/long_idle/I-13.png',
+		'img/2_character_pepe/1_idle/long_idle/I-14.png',
+		'img/2_character_pepe/1_idle/long_idle/I-15.png',
+		'img/2_character_pepe/1_idle/long_idle/I-16.png',
+		'img/2_character_pepe/1_idle/long_idle/I-17.png',
+		'img/2_character_pepe/1_idle/long_idle/I-18.png',
+		'img/2_character_pepe/1_idle/long_idle/I-19.png',
+		'img/2_character_pepe/1_idle/long_idle/I-20.png',
+	];
+
 	images_idle = [
 		'img/2_character_pepe/1_idle/idle/I-1.png',
 		'img/2_character_pepe/1_idle/idle/I-2.png',
@@ -62,69 +75,167 @@ class Character extends MovableObject {
 	world;
 	walkingSoundActive = false;
 
+	sleepDelay = 5000; // ms
+	isSleeping = false;
+	lastActiveAt = Date.now();
+
 	/**
 	 * Loads all sprite sheets and starts movement handling plus gravity.
 	 */
-	constructor() {
-		super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
-		this.loadImages(this.images_idle);
-		this.loadImages(this.images_walking);
-		this.loadImages(this.images_jumping);
-		this.loadImages(this.images_dead);
-		this.loadImages(this.images_hurt);
+  constructor() {
+    super().loadImage('img/2_character_pepe/1_idle/idle/I-1.png');
+    this.loadImages(this.images_idle);
+    this.loadImages(this.images_walking);
+    this.loadImages(this.images_jumping);
+    this.loadImages(this.images_dead);
+    this.loadImages(this.images_hurt);
+    this.loadImages(this.images_sleep);
 
-		this.animate();
-		this.applyGravity();
-		this.x = -100
-	}
+    this.animate();
+    this.applyGravity();
+    this.x = -100;
+    this.lastActiveAt = Date.now();
+  }
 
 	/**
 	 * Handles user input, movement sounds and animation states.
 	 */
-	animate() {
-		setInterval(() => {
-			const movingRight = this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
-			const movingLeft = this.world.keyboard.LEFT && this.x > -600;
+animate() {
+    this.startMovementLoop();
+    this.startAnimationLoop();
+  }
 
-			if (movingRight) {
-				this.moveRight();
-				this.otherDirection = false;
-			}
-			if (movingLeft) {
-				this.moveLeft();
-				this.otherDirection = true;
-			}
+  startMovementLoop() {
+    setInterval(() => {
+      const movement = this.handleHorizontalMovement();
+      this.handleJumpInput();
+      this.updateWalkingSoundState(movement);
+      this.updateCameraOffset();
+    }, 1000 / 60);
+  }
 
-			if (this.world.keyboard.SPACE && !this.isAboveGround()) {
-				this.jump();
-			}
+  startAnimationLoop() {
+    setInterval(() => {
+      this.updateAnimationState();
+    }, 120);
+  }
 
-			const movingHorizontally = movingRight || movingLeft;
-			const grounded = !this.isAboveGround();
-			const ableToWalkSound = !this.isDead() && !this.isHurt();
+  handleHorizontalMovement() {
+    const movingRight = this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x;
+    const movingLeft = this.world.keyboard.LEFT && this.x > -600;
 
-			if (movingHorizontally && grounded && ableToWalkSound) {
-				this.startWalkingSound();
-			} else {
-				this.stopWalkingSound();
-			}
+    if (movingRight) {
+      this.moveRight();
+      this.otherDirection = false;
+    }
+    if (movingLeft) {
+      this.moveLeft();
+      this.otherDirection = true;
+    }
 
-			this.world.camera_x = -this.x + 100;
-		}, 1000 / 60);
+    if (movingRight || movingLeft) {
+      this.registerActivity();
+    }
 
-		setInterval(() => {
-			this.playAnimation(this.images_idle);
-			if (this.isDead()) {
-				this.playAnimation(this.images_dead);
-			} else if (this.isHurt()) {
-				this.playAnimation(this.images_hurt);
-			} else if (this.isAboveGround()) {
-				this.playAnimation(this.images_jumping);
-			} else if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-				this.playAnimation(this.images_walking);
-			}
-		}, 120);
-	}
+    return { movingRight, movingLeft };
+  }
+
+  handleJumpInput() {
+    if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+      this.jump();
+      this.registerActivity();
+    }
+  }
+
+  updateWalkingSoundState({ movingRight, movingLeft }) {
+    const movingHorizontally = movingRight || movingLeft;
+    const grounded = !this.isAboveGround();
+    const ableToWalkSound = !this.isDead() && !this.isHurt();
+
+    if (movingHorizontally && grounded && ableToWalkSound) {
+      this.startWalkingSound();
+    } else {
+      this.stopWalkingSound();
+    }
+  }
+
+  updateCameraOffset() {
+    this.world.camera_x = -this.x + 100;
+  }
+
+  updateAnimationState() {
+    const idle = this.isIdleState();
+
+    if (!idle) {
+      this.registerActivity();
+    } else {
+      this.tryEnterSleep();
+    }
+
+    if (this.isSleeping) {
+      this.playAnimation(this.images_sleep);
+      return;
+    }
+
+    if (this.isDead()) {
+      this.playAnimation(this.images_dead);
+      return;
+    }
+    if (this.isHurt()) {
+      this.playAnimation(this.images_hurt);
+      return;
+    }
+    if (this.isAboveGround()) {
+      this.playAnimation(this.images_jumping);
+      return;
+    }
+    if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+      this.playAnimation(this.images_walking);
+      return;
+    }
+
+    this.playAnimation(this.images_idle);
+  }
+
+  isIdleState() {
+    const keyboard = this.world?.keyboard;
+    const noHorizontalInput = !keyboard?.LEFT && !keyboard?.RIGHT;
+    const noJumpInput = !keyboard?.SPACE;
+    const grounded = !this.isAboveGround();
+    return grounded && noHorizontalInput && noJumpInput && !this.isDead() && !this.isHurt();
+  }
+
+  tryEnterSleep() {
+    if (this.isSleeping) {
+      return;
+    }
+    if (Date.now() - this.lastActiveAt >= this.sleepDelay) {
+      this.enterSleep();
+    }
+  }
+
+  enterSleep() {
+    this.isSleeping = true;
+    this.frameIndex = 0;
+    this.stopWalkingSound();
+  }
+
+  registerActivity() {
+    this.lastActiveAt = Date.now();
+    if (this.isSleeping) {
+      this.isSleeping = false;
+      this.frameIndex = 0;
+    }
+  }
+
+  hit() {
+    const wasSleeping = this.isSleeping;
+    super.hit();
+    this.registerActivity();
+    if (wasSleeping && !this.isDead() && !this.isAboveGround()) {
+      this.jump();
+    }
+  }
 
 	/**
 	 * Gives the player an upward impulse and plays the jump sound.
