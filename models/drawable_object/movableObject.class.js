@@ -98,7 +98,7 @@ class MovableObject extends DrawableObject {
 	 * Moves the object to the right based on its current speed value.
 	 */
 	moveRight() {
-		console.log('Moving right');
+		// console.log('Moving right');
 		this.x += this.speed;
 	}
 

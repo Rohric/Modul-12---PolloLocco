@@ -20,7 +20,7 @@ function init() {
 	if (!audioManager.isMuted) {
 		audioManager.playSound('background_drum');
 	}
-	console.log('Start El Pollo Locco');
+	// console.log('Start El Pollo Locco');
 }
 
 /**
