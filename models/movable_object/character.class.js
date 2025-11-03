@@ -132,11 +132,9 @@ animate() {
       this.moveLeft();
       this.otherDirection = true;
     }
-
     if (movingRight || movingLeft) {
       this.registerActivity();
     }
-
     return { movingRight, movingLeft };
   }
 

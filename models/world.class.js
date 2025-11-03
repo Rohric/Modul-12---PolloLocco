@@ -125,23 +125,28 @@ class World {
 
 		this.destroy();
 		this.audio?.stopSound('background_wildwest');
-		this.audio?.stopSound('background_drum');
 
-		const canvas = document.getElementById('canvas');
-		const startOverlay = document.getElementById('overlayGameScreen');
-		const winOverlay = document.getElementById('overlayGameScreenWON');
-		const lostOverlay = document.getElementById('overlayGameScreenLOST');
+		this.updateOverlays(outcome);
+	}
+
+	updateOverlays(outcome) {
+		const { canvas, start, win, lost } = this.lookupOverlays();
 
 		canvas?.classList.add('d_none');
-		startOverlay?.classList.add('d_none');
+		start?.classList.add('d_none');
 
-		if (outcome === 'win') {
-			lostOverlay?.classList.add('d_none');
-			winOverlay?.classList.remove('d_none');
-		} else {
-			winOverlay?.classList.add('d_none');
-			lostOverlay?.classList.remove('d_none');
-		}
+		const showWin = outcome === 'win';
+		win?.classList.toggle('d_none', !showWin);
+		lost?.classList.toggle('d_none', showWin);
+	}
+
+	lookupOverlays() {
+		return {
+			canvas: document.getElementById('canvas'),
+			start: document.getElementById('overlayGameScreen'),
+			win: document.getElementById('overlayGameScreenWON'),
+			lost: document.getElementById('overlayGameScreenLOST'),
+		};
 	}
 
 	/**
@@ -431,14 +436,22 @@ class World {
 		this.endboss = null;
 		this.finishGame('win');
 	}
+
 	/**
 	 * Draws every game object and schedules the next frame.
 	 */
 	draw() {
 		this.checkBossEntrance();
 		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
 		this.ctx.translate(this.camera_x, 0);
+
+		this.renderObjects();
+		this.renderHUD();
+
+		this.animationId = requestAnimationFrame(() => this.draw());
+	}
+
+	renderObjects() {
 		this.addObjectsToMap(this.level.backgroundObjects);
 		this.addToMap(this.character);
 		this.addObjectsToMap(this.level.clouds);
@@ -446,7 +459,9 @@ class World {
 		this.addObjectsToMap(this.throwableObjects);
 		this.addObjectsToMap(this.level.collectableCoin.filter((coin) => !coin.collected));
 		this.addObjectsToMap(this.level.collectableBottle.filter((bottle) => !bottle.collected));
+	}
 
+	renderHUD() {
 		this.ctx.translate(-this.camera_x, 0);
 		this.addToMap(this.statusBar);
 		this.ctx.translate(this.camera_x, 0);
@@ -464,10 +479,7 @@ class World {
 		this.ctx.translate(this.camera_x, 0);
 
 		this.ctx.translate(-this.camera_x, 0);
-
-		this.animationId = requestAnimationFrame(() => this.draw());
 	}
-
 	/**
 	 * Adds a list of objects to the canvas in order.
 	 * @param {DrawableObject[]} objects - Objects to render.

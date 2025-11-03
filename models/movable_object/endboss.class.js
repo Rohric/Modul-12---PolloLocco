@@ -126,15 +126,12 @@ class Endboss extends MovableObject {
 		} else if (this.frameIndex >= frames.length) {
 			this.frameIndex = 0;
 		}
-
 		this.img = this.imageCache[frames[this.frameIndex]];
 		this.frameIndex++;
-
 		if (this.mode === 'hurt' && this.frameIndex > lastFrame) {
 			this.mode = 'alert';
 			this.frameIndex = 0;
 		}
-
 		if (this.mode === 'dead') {
 			this.frameIndex = Math.min(this.frameIndex, lastFrame);
 		}
@@ -144,7 +141,12 @@ class Endboss extends MovableObject {
 	 * Updates the entrance animation until the boss reaches the arena.
 	 */
 	update() {
-		if (this.entering && this.x > this.targetX) {
+		this.handleEntrance();
+		this.handleChase();
+	}
+
+	handleEntrance(){
+				if (this.entering && this.x > this.targetX) {
 			this.moveLeft();
 			if (this.x <= this.targetX) {
 				this.entering = false;
@@ -154,15 +156,17 @@ class Endboss extends MovableObject {
 				this.startRage();
 			}
 		}
+	}
 
-		if (this.isChasing && !this.isChasePaused && this.currentTarget) {
+	handleChase(){
+				if (this.isChasing && !this.isChasePaused && this.currentTarget) {
 			const difference = this.currentTarget.x - this.x;
 			const direction = difference < 0 ? -1 : 1;
 			this.otherDirection = direction > 0;
 			this.x += direction * this.chaseSpeed;
 		}
 	}
-
+	
 	/**
 	 * Registers a callback that spawns minions during an attack.
 	 * @param {() => void} handler - Function to execute on spawn requests.

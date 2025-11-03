@@ -33,12 +33,10 @@ class CollectableObject extends DrawableObject {
 		if (this.collected) {
 			return false;
 		}
-
 		if (character.isColliding(this)) {
 			this.collected = true;
 			return true;
 		}
-
 		return false;
 	}
 }
