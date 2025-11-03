@@ -43,20 +43,28 @@ class StatusBar extends DrawableObject {
 	 * @returns {number} Index into the image list.
 	 */
 	resolveImageIndex() {
+		const maxIndex = this.images.length - 1;
+		if (maxIndex <= 0) {
+			return 0;
+		}
+
 		if (this.percentage >= 100) {
-			return 5;
+			return maxIndex;
 		}
-		if (this.percentage > 80) {
-			return 4;
+		if (this.percentage >= 80) {
+			return Math.min(maxIndex, 4);
 		}
-		if (this.percentage > 60) {
-			return 3;
+		if (this.percentage >= 60) {
+			return Math.min(maxIndex, 3);
 		}
-		if (this.percentage > 40) {
-			return 2;
+		if (this.percentage >= 40) {
+			return Math.min(maxIndex, 2);
 		}
-		if (this.percentage > 20) {
-			return 1;
+		if (this.percentage >= 20) {
+			return Math.min(maxIndex, 1);
+		}
+		if (this.percentage > 0) {
+			return Math.min(maxIndex, 1);
 		}
 		return 0;
 	}

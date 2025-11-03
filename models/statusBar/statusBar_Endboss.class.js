@@ -15,8 +15,8 @@ class StatusBar_Endboss extends StatusBar {
 				'img/7_statusbars/2_statusbar_endboss/orange/orange80.png',
 				'img/7_statusbars/2_statusbar_endboss/orange/orange100.png',
 			],
-			x: -250,
-			y: 400,
+			x: 820,
+			y: 20,
 			percentage: 100,
 		});
 	}

@@ -341,13 +341,18 @@ class World {
 	 * Slides the endboss status bar into the HUD view.
 	 */
 	slideEndbossBar() {
-		const targetX = 10;
-		let speed = 6;
+		const margin = 10;
+		const targetX = Math.max(margin, this.canvas.width - this.statusBar_Endboss.width - margin);
+		let speed = 8;
+
+		if (this.statusBar_Endboss.x <= targetX) {
+			this.statusBar_Endboss.x = this.canvas.width + this.statusBar_Endboss.width;
+		}
 
 		const move = () => {
-			if (this.statusBar_Endboss.x < targetX) {
-				this.statusBar_Endboss.x += speed;
-				if (this.statusBar_Endboss.x > targetX) {
+			if (this.statusBar_Endboss.x > targetX) {
+				this.statusBar_Endboss.x -= speed;
+				if (this.statusBar_Endboss.x < targetX) {
 					this.statusBar_Endboss.x = targetX;
 				}
 				requestAnimationFrame(move);
