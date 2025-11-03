@@ -265,11 +265,11 @@ class World {
 	 * Applies damage handling when the character is hit by an enemy.
 	 */
 	handleHeroHit() {
-		if (this.character.energy === 0) {
-			this.handleGameOver();
-		}
 		this.character.hit();
 		this.statusBar.setPercentage(this.character.energy);
+		if (this.character.energy <= 0) {
+			this.finishGame('loss');
+		}
 	}
 
 	/**
