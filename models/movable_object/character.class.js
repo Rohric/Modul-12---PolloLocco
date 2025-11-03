@@ -163,39 +163,34 @@ animate() {
     this.world.camera_x = -this.x + 100;
   }
 
-  updateAnimationState() {
-    const idle = this.isIdleState();
-
-    if (!idle) {
-      this.registerActivity();
-    } else {
-      this.tryEnterSleep();
-    }
-
-    if (this.isSleeping) {
-      this.playAnimation(this.images_sleep);
-      return;
-    }
-
-    if (this.isDead()) {
-      this.playAnimation(this.images_dead);
-      return;
-    }
-    if (this.isHurt()) {
-      this.playAnimation(this.images_hurt);
-      return;
-    }
-    if (this.isAboveGround()) {
-      this.playAnimation(this.images_jumping);
-      return;
-    }
-    if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
-      this.playAnimation(this.images_walking);
-      return;
-    }
-
-    this.playAnimation(this.images_idle);
+ updateAnimationState() {
+  if (!this.isIdleState()) {
+    this.registerActivity();
+  } else {
+    this.tryEnterSleep();
   }
+
+  this.playAnimation(this.resolveAnimationFrames());
+}
+
+resolveAnimationFrames() {
+  if (this.isSleeping) {
+    return this.images_sleep;
+  }
+  if (this.isDead()) {
+    return this.images_dead;
+  }
+  if (this.isHurt()) {
+    return this.images_hurt;
+  }
+  if (this.isAboveGround()) {
+    return this.images_jumping;
+  }
+  if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+    return this.images_walking;
+  }
+  return this.images_idle;
+}
 
   isIdleState() {
     const keyboard = this.world?.keyboard;

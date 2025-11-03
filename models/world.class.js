@@ -339,12 +339,7 @@ class World {
 			return;
 		}
 		this.bossAttackInterval = setInterval(() => {
-			if (
-				!this.endboss ||
-				this.endboss.entering ||
-				this.endboss.mode === 'dead' ||
-				this.endboss.mode === 'removed'
-			) {
+			if (!this.endboss || this.endboss.entering || this.endboss.mode === 'dead' || this.endboss.mode === 'removed') {
 				return;
 			}
 			this.endboss.startAttackSequence();
@@ -392,43 +387,50 @@ class World {
 	 */
 	checkThrowableHits() {
 		if (!this.endboss) {
-			this.throwableObjects = this.throwableObjects.filter(
-				(bottle) => bottle.x <= this.character.x + 2000 && bottle.y <= this.canvas.height + 200,
-			);
+			this.filterActiveBottles();
 			return;
 		}
 
+		this.handleBossBottleHits();
+		this.handleBossDefeat();
+	}
+
+	filterActiveBottles() {
+		this.throwableObjects = this.throwableObjects.filter(
+			(bottle) => bottle.x <= this.character.x + 2000 && bottle.y <= this.canvas.height + 200,
+		);
+	}
+
+	handleBossBottleHits() {
 		this.throwableObjects = this.throwableObjects.filter((bottle) => {
 			if (this.endboss.isColliding(bottle)) {
 				this.endboss.hit();
 				this.audio.playSound('boss_hit');
-
 				this.statusBar_Endboss.setPercentage(this.endboss.energy);
 				return false;
 			}
-			if (bottle.x > this.character.x + 2000 || bottle.y > this.canvas.height + 200) {
-				return false;
-			}
-			return true;
+			return bottle.x <= this.character.x + 2000 && bottle.y <= this.canvas.height + 200;
 		});
-
-		if (this.endboss.mode === 'removed') {
-			this.audio?.playSound('endboss_die');
-			const defeatedBoss = this.endboss;
-			const idx = this.level.enemies.indexOf(this.endboss);
-			if (idx !== -1) {
-				this.level.enemies.splice(idx, 1);
-			}
-			if (defeatedBoss) {
-				defeatedBoss.clearTimers();
-				defeatedBoss.clearAttackMovement();
-				defeatedBoss.world = null;
-			}
-			this.endboss = null;
-			this.finishGame('win');
-		}
 	}
 
+	handleBossDefeat() {
+		if (!this.endboss || this.endboss.mode !== 'removed') {
+			return;
+		}
+		this.audio?.playSound('endboss_die');
+
+		const defeatedBoss = this.endboss;
+		const idx = this.level.enemies.indexOf(this.endboss);
+		if (idx !== -1) {
+			this.level.enemies.splice(idx, 1);
+		}
+		defeatedBoss.clearTimers();
+		defeatedBoss.clearAttackMovement();
+		defeatedBoss.world = null;
+
+		this.endboss = null;
+		this.finishGame('win');
+	}
 	/**
 	 * Draws every game object and schedules the next frame.
 	 */

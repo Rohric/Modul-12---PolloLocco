@@ -67,6 +67,7 @@ class Endboss extends MovableObject {
 	rageTimeout = null;
 	currentTarget = null;
 
+	animationFrameDelay = 200;
 	/**
 	 * Loads all required sprites and starts the idle animation.
 	 */
@@ -109,31 +110,34 @@ class Endboss extends MovableObject {
 	 */
 	animate() {
 		setInterval(() => {
-			const images = this.getCurrentImages();
-			if (!images.length) {
+			const frames = this.getCurrentImages();
+			if (!frames.length) {
 				return;
 			}
-			const totalFrames = images.length;
-
-			if (this.mode === 'dead' && this.frameIndex >= totalFrames) {
-				this.frameIndex = totalFrames - 1;
-			} else if (this.frameIndex >= totalFrames) {
-				this.frameIndex = 0;
-			}
-
-			const path = images[this.frameIndex];
-			this.img = this.imageCache[path];
-			this.frameIndex++;
-
-			if (this.mode === 'hurt' && this.frameIndex >= totalFrames) {
-				this.mode = 'alert';
-				this.frameIndex = 0;
-			}
-
-			if (this.mode === 'dead') {
-				this.frameIndex = Math.min(this.frameIndex, totalFrames - 1);
-			}
+			this.advanceFrame(frames);
 		}, 200);
+	}
+
+	advanceFrame(frames) {
+		const lastFrame = frames.length - 1;
+
+		if (this.mode === 'dead' && this.frameIndex >= frames.length) {
+			this.frameIndex = lastFrame;
+		} else if (this.frameIndex >= frames.length) {
+			this.frameIndex = 0;
+		}
+
+		this.img = this.imageCache[frames[this.frameIndex]];
+		this.frameIndex++;
+
+		if (this.mode === 'hurt' && this.frameIndex > lastFrame) {
+			this.mode = 'alert';
+			this.frameIndex = 0;
+		}
+
+		if (this.mode === 'dead') {
+			this.frameIndex = Math.min(this.frameIndex, lastFrame);
+		}
 	}
 
 	/**
@@ -221,7 +225,7 @@ class Endboss extends MovableObject {
 		this.frameIndex = 0;
 		this.requestSpawn();
 
-		this.rageTimeout = setTimeout(() => this.beginChase(), 600);
+		this.rageTimeout = setTimeout(() => this.beginChase(), 1200);
 	}
 
 	/**
@@ -287,7 +291,7 @@ class Endboss extends MovableObject {
 		if (this.resumeChaseTimeout) {
 			clearTimeout(this.resumeChaseTimeout);
 		}
-		this.resumeChaseTimeout = setTimeout(() => this.resumeChaseAfterAttack(), 600);
+		this.resumeChaseTimeout = setTimeout(() => this.resumeChaseAfterAttack(), 1200);
 	}
 
 	/**
