@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<link rel="shortcut icon" href="img/buttons/favicon.png" type="image/x-icon">
+		<link rel="shortcut icon" href="img/buttons/favicon.png" type="image/x-icon" />
 		<title>El Polloo Loco</title>
 
 		<link rel="stylesheet" href="style.css" />
@@ -42,11 +42,15 @@
 		<script src="levels/level1.js"></script>
 
 		<script src="java_script/game.js"></script>
+		<script src="java_script/dialog.js" defer></script>
 	</head>
 
 	<body>
 		<article id="orientationWarning" class="orientation-warning">
-			<p>For the best Game experience, <br> please rotate your Device.</p>
+			<p>
+				For the best Game experience, <br />
+				please rotate your Device.
+			</p>
 		</article>
 
 		<!-- Linke Seite: Bewegung -->
@@ -74,10 +78,28 @@
 		<section class="background">
 			<h1>El Pollo Loco</h1>
 
-			<button class="audio_toggle" type="button">
-				<span data-audio-state="on">Sound an</span>
-				<span data-audio-state="off" class="d_none">Sound aus</span>
-			</button>
+			<article class="info">
+				<button id="audioToggle" class="audio_toggle" type="button">
+					<span data-audio-state="on">Sound on</span>
+					<span data-audio-state="off" class="d_none">Sound off</span>
+				</button>
+
+				<button class="info_btn" type="button" data-dialog-open="imprintDialog">Impressum</button>
+
+				<dialog id="imprintDialog" class="info_dialog">
+					<header class="info_dialog_header">
+						<h3>Impressum</h3>
+						<button type="button" class="dialog_close" data-dialog-close>
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</header>
+
+					<p>Verantwortlich gemaess § 55 RStV</p>
+					<p>Emil Marsal</p>
+					<p>Hauptstrasse 316<br />66333 Voelklingen</p>
+					<p>E-Mail: <a href="mailto:emilmarsal@icloud.com">emilmarsal@icloud.com</a></p>
+				</dialog>
+			</article>
 
 			<canvas class="d_none" id="canvas" width="720" height="480"> </canvas>
 
