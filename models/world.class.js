@@ -27,6 +27,7 @@ class World {
 	bossAttackInterval = null;
 
 	audio = null;
+	gameHasEnded = false;
 
 	/**
 	 * Creates the world, wires the canvas/context and starts all loops.
@@ -106,69 +107,100 @@ class World {
 		this.cancelAnimation();
 	}
 
-/**
- * Spawns throwable bottles when the player presses the throw key
- * and the cooldown has elapsed.
- */
-checkThrowObjects() {
-  if (!this.canAttemptThrow()) {
-    return;
-  }
+	/**
+	 * Ends the current round, shuts down all loops and shows the matching overlay.
+	 * @param {'win'|'loss'} outcome - Determines which overlay becomes visible.
+	 */
+	finishGame(outcome) {
+		if (this.gameHasEnded) {
+			return;
+		}
+		this.gameHasEnded = true;
 
-  const now = Date.now();
-  if (this.isThrowOnCooldown(now)) {
-    return;
-  }
+		this.destroy();
+		this.audio?.stopSound('background_wildwest');
+		this.audio?.stopSound('background_drum');
 
-  this.registerThrow(now);
-  this.spawnBottle();
-  this.consumeBottleCharge();
-}
+		const canvas = document.getElementById('canvas');
+		const startOverlay = document.getElementById('overlayGameScreen');
+		const winOverlay = document.getElementById('overlayGameScreenWON');
+		const lostOverlay = document.getElementById('overlayGameScreenLOST');
 
-/**
- * Determines whether the player currently satisfies every
- * prerequisite for throwing a bottle.
- * @returns {boolean} True if a throw may be attempted.
- */
-canAttemptThrow() {
-  return this.keyboard.D && this.statusBar_Bottle.percentage > 0;
-}
+		canvas?.classList.add('d_none');
+		startOverlay?.classList.add('d_none');
 
-/**
- * Verifies the cooldown timer for bottle throws.
- * @param {number} timestamp - Current timestamp in milliseconds.
- * @returns {boolean} True if the cooldown is still active.
- */
-isThrowOnCooldown(timestamp) {
-  return timestamp - this.lastThrow < this.throwCooldown;
-}
+		if (outcome === 'win') {
+			lostOverlay?.classList.add('d_none');
+			winOverlay?.classList.remove('d_none');
+		} else {
+			winOverlay?.classList.add('d_none');
+			lostOverlay?.classList.remove('d_none');
+		}
+	}
 
-/**
- * Updates the internal state to remember when the last throw occurred.
- * @param {number} timestamp - Timestamp in milliseconds.
- */
-registerThrow(timestamp) {
-  this.lastThrow = timestamp;
-}
+	/**
+	 * Spawns throwable bottles when the player presses the throw key
+	 * and the cooldown has elapsed.
+	 */
+	checkThrowObjects() {
+		if (!this.canAttemptThrow()) {
+			return;
+		}
 
-/**
- * Creates a new throwable bottle and adds it to the active projectiles.
- */
-spawnBottle() {
-  const direction = this.character.otherDirection ? -1 : 1;
-  const offsetX = this.character.x + (direction === 1 ? 100 : -60);
-  const offsetY = this.character.y + 100;
-  const bottle = new ThrowablaObject(offsetX, offsetY, direction);
-  this.throwableObjects.push(bottle);
-}
+		const now = Date.now();
+		if (this.isThrowOnCooldown(now)) {
+			return;
+		}
 
-/**
- * Reduces the bottle status bar after a throw.
- */
-consumeBottleCharge() {
-  const nextValue = Math.max(0, this.statusBar_Bottle.percentage - 10);
-  this.statusBar_Bottle.setPercentage(nextValue);
-}
+		this.registerThrow(now);
+		this.spawnBottle();
+		this.consumeBottleCharge();
+	}
+
+	/**
+	 * Determines whether the player currently satisfies every
+	 * prerequisite for throwing a bottle.
+	 * @returns {boolean} True if a throw may be attempted.
+	 */
+	canAttemptThrow() {
+		return this.keyboard.D && this.statusBar_Bottle.percentage > 0;
+	}
+
+	/**
+	 * Verifies the cooldown timer for bottle throws.
+	 * @param {number} timestamp - Current timestamp in milliseconds.
+	 * @returns {boolean} True if the cooldown is still active.
+	 */
+	isThrowOnCooldown(timestamp) {
+		return timestamp - this.lastThrow < this.throwCooldown;
+	}
+
+	/**
+	 * Updates the internal state to remember when the last throw occurred.
+	 * @param {number} timestamp - Timestamp in milliseconds.
+	 */
+	registerThrow(timestamp) {
+		this.lastThrow = timestamp;
+	}
+
+	/**
+	 * Creates a new throwable bottle and adds it to the active projectiles.
+	 */
+	spawnBottle() {
+		const direction = this.character.otherDirection ? -1 : 1;
+		const offsetX = this.character.x + (direction === 1 ? 100 : -60);
+		const offsetY = this.character.y + 100;
+		const bottle = new ThrowablaObject(offsetX, offsetY, direction);
+		this.throwableObjects.push(bottle);
+	}
+
+	/**
+	 * Reduces the bottle status bar after a throw.
+	 */
+	consumeBottleCharge() {
+		const nextValue = Math.max(0, this.statusBar_Bottle.percentage - 10);
+		this.statusBar_Bottle.setPercentage(nextValue);
+	}
 
 	/**
 	 * Resolves collisions between the character and enemies.
@@ -244,9 +276,7 @@ consumeBottleCharge() {
 	 * Switches the UI/state when the player runs out of energy.
 	 */
 	handleGameOver() {
-		document.getElementById('canvas').classList.add('d_none');
-		document.getElementById('overlayGameScreenLOST').classList.remove('d_none');
-		this.audio?.stopSound('background_wildwest');
+		this.finishGame('loss');
 	}
 
 	/**
@@ -365,14 +395,12 @@ consumeBottleCharge() {
 
 		if (this.endboss.mode === 'removed') {
 			this.audio?.playSound('endboss_die');
-			this.audio?.stopSound('background_wildwest');
 			const idx = this.level.enemies.indexOf(this.endboss);
 			if (idx !== -1) {
 				this.level.enemies.splice(idx, 1);
 			}
 			this.endboss = null;
-			document.getElementById('canvas').classList.add('d_none');
-			document.getElementById('overlayGameScreenWON').classList.remove('d_none');
+			this.finishGame('win');
 		}
 	}
 
