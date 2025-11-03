@@ -43,6 +43,7 @@ class World {
 		this.endboss = this.level.enemies.find((enemy) => enemy instanceof Endboss);
 		if (this.endboss) {
 			this.endboss.setSpawnHandler(() => this.spawnAttackChickens());
+			this.endboss.world = this;
 		}
 
 		this.draw();
@@ -105,6 +106,11 @@ class World {
 		this.clearTimer('collectableInterval');
 		this.clearTimer('bossAttackInterval');
 		this.cancelAnimation();
+		if (this.endboss) {
+			this.endboss.clearTimers();
+			this.endboss.clearAttackMovement();
+			this.endboss.world = null;
+		}
 	}
 
 	/**
@@ -216,6 +222,9 @@ class World {
 	handleEnemyCollision(enemy) {
 		if (!this.character.isColliding(enemy) || enemy.dead) {
 			return;
+		}
+		if (enemy instanceof Endboss) {
+			enemy.onPlayerCollision(this);
 		}
 		if (this.handleEnemySmash(enemy) || this.character.isHurt()) {
 			return;
@@ -330,7 +339,12 @@ class World {
 			return;
 		}
 		this.bossAttackInterval = setInterval(() => {
-			if (!this.endboss || this.endboss.entering || this.endboss.mode === 'dead') {
+			if (
+				!this.endboss ||
+				this.endboss.entering ||
+				this.endboss.mode === 'dead' ||
+				this.endboss.mode === 'removed'
+			) {
 				return;
 			}
 			this.endboss.startAttackSequence();
@@ -400,9 +414,15 @@ class World {
 
 		if (this.endboss.mode === 'removed') {
 			this.audio?.playSound('endboss_die');
+			const defeatedBoss = this.endboss;
 			const idx = this.level.enemies.indexOf(this.endboss);
 			if (idx !== -1) {
 				this.level.enemies.splice(idx, 1);
+			}
+			if (defeatedBoss) {
+				defeatedBoss.clearTimers();
+				defeatedBoss.clearAttackMovement();
+				defeatedBoss.world = null;
 			}
 			this.endboss = null;
 			this.finishGame('win');

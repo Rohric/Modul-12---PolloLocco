@@ -54,11 +54,18 @@ class Endboss extends MovableObject {
 
 	offset = { top: 80, right: 40, bottom: 40, left: 40 };
 
+	world = null;
 	spawnHandler = null;
 	baseX = null;
-	attackPhase = null;
 	attackMovementInterval = null;
-	attackForwardOffset = 560;
+
+	isChasing = false;
+	chaseSpeed = 4.2;
+	isChasePaused = false;
+	chaseAttackInterval = null;
+	resumeChaseTimeout = null;
+	rageTimeout = null;
+	currentTarget = null;
 
 	/**
 	 * Loads all required sprites and starts the idle animation.
@@ -106,36 +113,25 @@ class Endboss extends MovableObject {
 			if (!images.length) {
 				return;
 			}
-			if (this.frameIndex >= images.length) {
+			const totalFrames = images.length;
+
+			if (this.mode === 'dead' && this.frameIndex >= totalFrames) {
+				this.frameIndex = totalFrames - 1;
+			} else if (this.frameIndex >= totalFrames) {
 				this.frameIndex = 0;
 			}
+
 			const path = images[this.frameIndex];
 			this.img = this.imageCache[path];
 			this.frameIndex++;
 
-			if (this.mode === 'attack' && this.frameIndex >= images.length) {
-				this.frameIndex = 0;
-				if (this.attackPhase === 'first-strike') {
-					this.startAdvancePhase();
-					return;
-				}
-				if (this.attackPhase === 'second-strike') {
-					this.startRetreatPhase();
-					return;
-				}
-				if (!this.attackPhase) {
-					this.mode = 'alert';
-					this.attackActive = false;
-				}
-			}
-
-			if (this.mode === 'hurt' && this.frameIndex >= images.length) {
+			if (this.mode === 'hurt' && this.frameIndex >= totalFrames) {
 				this.mode = 'alert';
 				this.frameIndex = 0;
 			}
 
-			if (this.mode === 'dead' && this.frameIndex >= images.length) {
-				this.frameIndex = images.length - 1;
+			if (this.mode === 'dead') {
+				this.frameIndex = Math.min(this.frameIndex, totalFrames - 1);
 			}
 		}, 200);
 	}
@@ -151,7 +147,15 @@ class Endboss extends MovableObject {
 				this.mode = 'alert';
 				this.frameIndex = 0;
 				this.baseX = this.targetX;
+				this.startRage();
 			}
+		}
+
+		if (this.isChasing && !this.isChasePaused && this.currentTarget) {
+			const difference = this.currentTarget.x - this.x;
+			const direction = difference < 0 ? -1 : 1;
+			this.otherDirection = direction > 0;
+			this.x += direction * this.chaseSpeed;
 		}
 	}
 
@@ -185,55 +189,184 @@ class Endboss extends MovableObject {
 	}
 
 	/**
-	 * Triggers the multi-step attack sequence (spawn, advance, spawn, retreat).
+	 * Compatibility helper for existing attack triggers.
 	 */
 	startAttackSequence() {
-		if (this.attackActive || this.entering || this.mode === 'dead' || this.mode === 'removed') {
+		this.startRage();
+	}
+
+	/**
+	 * Initiates the rage animation and summons minions.
+	 */
+	startRage() {
+		if (
+			this.entering ||
+			this.attackActive ||
+			this.isChasing ||
+			this.attackMovementInterval ||
+			this.mode === 'dead' ||
+			this.mode === 'removed'
+		) {
 			return;
 		}
 		if (this.baseX === null) {
 			this.baseX = this.x;
 		}
 		this.clearAttackMovement();
-		this.attackActive = true;
-		this.attackPhase = 'first-strike';
+		this.clearTimers();
+
 		this.mode = 'attack';
+		this.attackActive = true;
+		this.otherDirection = false;
 		this.frameIndex = 0;
-		this.otherDirection = false;
 		this.requestSpawn();
+
+		this.rageTimeout = setTimeout(() => this.beginChase(), 600);
 	}
 
 	/**
-	 * Moves the boss toward the player after the opening attack.
+	 * Starts moving toward the player after the rage outburst.
 	 */
-	startAdvancePhase() {
-		this.attackPhase = 'advance';
+	beginChase() {
+		this.rageTimeout = null;
+		if (this.mode === 'dead' || this.mode === 'removed') {
+			return;
+		}
+
+		this.attackActive = false;
+		this.isChasing = true;
+		this.isChasePaused = false;
 		this.mode = 'walk';
-		this.otherDirection = false;
-		const destination = Math.max(this.baseX - this.attackForwardOffset, this.baseX - 860);
-		this.beginMovement(destination, () => {
-			this.attackPhase = 'second-strike';
-			this.mode = 'attack';
-			this.frameIndex = 0;
-			this.otherDirection = false;
-			this.requestSpawn();
-		});
+		this.frameIndex = 0;
+		this.currentTarget = this.world?.character ?? null;
+
+		if (!this.currentTarget) {
+			this.endChase(false);
+			return;
+		}
+
+		this.startChaseAttackCycle();
 	}
 
 	/**
-	 * Returns the boss to the original position after the forward rush.
+	 * Arms the repeating chase attack cycle.
 	 */
-	startRetreatPhase() {
-		this.attackPhase = 'retreat';
+	startChaseAttackCycle() {
+		this.stopChaseAttackCycle();
+		this.chaseAttackInterval = setInterval(() => this.performChaseAttack(), 3000);
+	}
+
+	/**
+	 * Cancels the repeating chase attack cycle.
+	 */
+	stopChaseAttackCycle() {
+		if (this.chaseAttackInterval) {
+			clearInterval(this.chaseAttackInterval);
+			this.chaseAttackInterval = null;
+		}
+	}
+
+	/**
+	 * Executes an attack burst during the chase and resumes pursuit afterwards.
+	 */
+	performChaseAttack() {
+		if (!this.isChasing || this.mode === 'dead' || this.mode === 'removed') {
+			this.stopChaseAttackCycle();
+			return;
+		}
+
+		this.isChasePaused = true;
+		this.mode = 'attack';
+		this.attackActive = true;
+		this.frameIndex = 0;
+		if (this.currentTarget) {
+			this.otherDirection = this.currentTarget.x > this.x;
+		}
+		this.requestSpawn();
+
+		if (this.resumeChaseTimeout) {
+			clearTimeout(this.resumeChaseTimeout);
+		}
+		this.resumeChaseTimeout = setTimeout(() => this.resumeChaseAfterAttack(), 600);
+	}
+
+	/**
+	 * Resumes the pursuit once the mid-chase attack completed.
+	 */
+	resumeChaseAfterAttack() {
+		this.resumeChaseTimeout = null;
+		if (!this.isChasing || this.mode === 'dead' || this.mode === 'removed') {
+			return;
+		}
+
+		this.attackActive = false;
 		this.mode = 'walk';
-		this.otherDirection = true;
+		this.frameIndex = 0;
+		this.isChasePaused = false;
+	}
+
+	/**
+	 * Stops the current chase, returns to base and optionally starts another rage.
+	 * @param {boolean} triggerFollowUp - Whether to trigger another attack cycle afterwards.
+	 */
+	endChase(triggerFollowUp = true) {
+		this.cancelChase();
+		if (this.mode === 'dead' || this.mode === 'removed') {
+			return;
+		}
+
+		this.mode = 'walk';
+		this.attackActive = false;
+		const directionToBase = this.baseX < this.x ? -1 : 1;
+		this.otherDirection = directionToBase > 0;
+
 		this.beginMovement(this.baseX, () => {
-			this.attackPhase = null;
 			this.otherDirection = false;
 			this.mode = 'alert';
-			this.attackActive = false;
 			this.frameIndex = 0;
+			this.attackActive = false;
+
+			if (triggerFollowUp) {
+				this.startRage();
+			}
 		});
+	}
+
+	/**
+	 * Cancels all pending chase timers and resets flags.
+	 */
+	cancelChase() {
+		this.stopChaseAttackCycle();
+		if (this.resumeChaseTimeout) {
+			clearTimeout(this.resumeChaseTimeout);
+			this.resumeChaseTimeout = null;
+		}
+		this.isChasing = false;
+		this.isChasePaused = false;
+		this.currentTarget = null;
+	}
+
+	/**
+	 * Clears all temporal behaviour timers (rage + chase).
+	 */
+	clearTimers() {
+		if (this.rageTimeout) {
+			clearTimeout(this.rageTimeout);
+			this.rageTimeout = null;
+		}
+		this.cancelChase();
+		this.attackActive = false;
+	}
+
+	/**
+	 * Reacts to a direct collision with the player character.
+	 * @param {World} world - Current world instance.
+	 */
+	onPlayerCollision(world) {
+		if (!this.isChasing || this.mode === 'dead' || this.mode === 'removed') {
+			return;
+		}
+		this.endChase(true);
 	}
 
 	/**
@@ -282,7 +415,7 @@ class Endboss extends MovableObject {
 			return;
 		}
 		this.clearAttackMovement();
-		this.attackPhase = null;
+		this.clearTimers();
 		this.attackActive = false;
 		this.mode = 'hurt';
 		this.frameIndex = 0;
@@ -306,6 +439,7 @@ class Endboss extends MovableObject {
 	 */
 	die() {
 		this.clearAttackMovement();
+		this.clearTimers();
 		this.mode = 'dead';
 		this.frameIndex = 0;
 		this.attackActive = false;
