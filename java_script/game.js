@@ -89,20 +89,6 @@ function setupMuteControls() {
 }
 
 /**
- * Shows a rotate-warning overlay when the device is in portrait mode.
- */
-function setupOrientationWarning() {
-	const warning = document.getElementById('orientationWarning');
-	if (!warning) {
-		return;
-	}
-	const toggleOrientationWarning = () =>
-		warning.classList.toggle('show', window.matchMedia('(orientation: portrait)').matches);
-	['resize', 'orientationchange'].forEach((eventName) => window.addEventListener(eventName, toggleOrientationWarning));
-	toggleOrientationWarning();
-}
-
-/**
  * Handles keyboard presses and updates the current input state.
  * @param {KeyboardEvent} event - Triggered keydown event.
  */
@@ -172,6 +158,5 @@ window.addEventListener('keyup', (event) => {
  */
 document.addEventListener('DOMContentLoaded', () => {
 	setupMuteControls();
-	setupOrientationWarning();
 	setupAutoplayFallback();
 });
