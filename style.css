@@ -4,7 +4,8 @@
 
 body {
 	margin: 0;
-	min-height: 100vh;
+	min-height: calc(var(--vh, 1vh) * 100); /* fallback for browsers without dvh */
+	min-height: 100dvh;
 	display: flex;
 	justify-content: center;
 	align-items: stretch;
@@ -21,9 +22,11 @@ body {
  */
 .background {
 	--stage-w: min(92vw, 1024px);
-	--stage-h: min(62vh, 520px);
+	--stage-h: min(calc(var(--vh, 1vh) * 62), 520px); /* fallback */
+	--stage-h: min(62svh, 520px);
 	width: 100%;
-	min-height: 100vh;
+	min-height: calc(var(--vh, 1vh) * 100); /* fallback for browsers without dvh */
+	min-height: 100dvh;
 	padding: 20px 24px 44px;
 	display: flex;
 	flex-direction: column;
@@ -375,7 +378,8 @@ button {
 /* Short landscape screens: give the game surface more vertical room. */
 @media (max-height: 620px) {
 	.background {
-		--stage-h: 82vh;
+		--stage-h: calc(var(--vh, 1vh) * 82); /* fallback */
+		--stage-h: 82svh;
 		padding-top: 16px;
 		padding-bottom: 24px;
 		justify-content: center;
@@ -405,7 +409,8 @@ button {
 		/* Keep room on both sides for the vertical control clusters so the
 		   centered canvas never sits underneath them. */
 		--stage-w: calc(100vw - 2 * clamp(120px, 19vw, 160px));
-		--stage-h: 80vh;
+		--stage-h: calc(var(--vh, 1vh) * 80); /* fallback */
+		--stage-h: 80svh;
 		padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
 	}
 

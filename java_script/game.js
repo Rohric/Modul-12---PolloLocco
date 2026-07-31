@@ -89,6 +89,16 @@ function setupMuteControls() {
 }
 
 /**
+ * Store the real visible viewport height in --vh for browsers without dvh/svh.
+ */
+function setupViewportHeightUnit() {
+	const updateViewportHeight = () =>
+		document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+	['resize', 'orientationchange'].forEach((eventName) => window.addEventListener(eventName, updateViewportHeight));
+	updateViewportHeight();
+}
+
+/**
  * Handles keyboard presses and updates the current input state.
  * @param {KeyboardEvent} event - Triggered keydown event.
  */
@@ -157,6 +167,7 @@ window.addEventListener('keyup', (event) => {
  * Restores UI bindings and autoplay fallback once the DOM is ready.
  */
 document.addEventListener('DOMContentLoaded', () => {
+	setupViewportHeightUnit();
 	setupMuteControls();
 	setupAutoplayFallback();
 });
