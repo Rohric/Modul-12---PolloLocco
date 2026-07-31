@@ -307,9 +307,10 @@ button {
 
 .mobile_controls {
 	position: fixed;
-	bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+	top: 50%;
+	transform: translateY(-50%);
 	display: none;
-	flex-direction: row;
+	flex-direction: column;
 	gap: 14px;
 	padding: 10px 14px;
 	background: rgba(0, 0, 0, 0.35);
@@ -321,11 +322,11 @@ button {
 }
 
 .mobile_controls_left {
-	left: 16px;
+	left: calc(12px + env(safe-area-inset-left, 0px));
 }
 
 .mobile_controls_right {
-	right: 16px;
+	right: calc(12px + env(safe-area-inset-right, 0px));
 }
 
 .mobile_btn {
@@ -401,9 +402,11 @@ button {
 
 @media (hover: none) and (pointer: coarse) {
 	.background {
-		--stage-w: 96vw;
-		--stage-h: 72vh;
-		padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
+		/* Keep room on both sides for the vertical control clusters so the
+		   centered canvas never sits underneath them. */
+		--stage-w: calc(100vw - 2 * clamp(120px, 19vw, 160px));
+		--stage-h: 80vh;
+		padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
 	}
 
 	.overlay_game_text {
